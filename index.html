@@ -64,89 +64,415 @@
         @media (max-width: 768px) {
             .sidebar {
                 position: fixed;
-                left: 0; top: 0; bottom: 0;
+                left: 0;
+                top: 0;
+                bottom: 0;
                 transform: translateX(-100%);
                 width: 280px;
             }
-            .sidebar.open { transform: translateX(0); box-shadow: 10px 0 30px rgba(0,0,0,0.1); }
-            .main-content { padding: 15px !important; }
-            .content-header { flex-direction: column; gap: 12px; align-items: stretch !important; }
-            .matrix-card { padding: 15px !important; overflow-x: auto; }
-            table { min-width: 450px; }
-            #btn-save { width: 100%; height: 50px; font-size: 1.1rem; }
+
+            .sidebar.open {
+                transform: translateX(0);
+                box-shadow: 10px 0 30px rgba(0, 0, 0, 0.1);
+            }
+
+            .main-content {
+                padding: 15px !important;
+            }
+
+            .content-header {
+                flex-direction: column;
+                gap: 12px;
+                align-items: stretch !important;
+            }
+
+            .matrix-card {
+                padding: 15px !important;
+                overflow-x: auto;
+            }
+
+            table {
+                min-width: 450px;
+            }
+
+            #btn-save {
+                width: 100%;
+                height: 50px;
+                font-size: 1.1rem;
+            }
         }
 
         .menu-toggle {
             display: none;
-            background: white; border: 2px solid var(--border-color);
-            padding: 8px 12px; border-radius: 12px; cursor: pointer;
-            font-size: 1.2rem; margin-right: 15px;
+            background: white;
+            border: 2px solid var(--border-color);
+            padding: 8px 12px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            margin-right: 15px;
         }
-        @media (max-width: 768px) { .menu-toggle { display: block; } }
 
-        .sidebar-header { display: flex; align-items: center; gap: 10px; margin-bottom: 40px; }
-        .sidebar-header h1 { font-size: 1.5rem; font-weight: 900; color: var(--accent-pink); }
-        .nav-section { margin-bottom: 30px; }
-        .nav-label { font-size: 0.9rem; font-weight: 900; color: var(--text-secondary); margin-bottom: 15px; }
-        .nav-item { display: flex; align-items: center; gap: 15px; padding: 15px 20px; text-decoration: none; color: var(--text-primary); border-radius: 20px; font-size: 1.2rem; font-weight: 700; transition: all 0.2s; margin-bottom: 8px; }
-        .nav-item.active { background: var(--accent-pink); color: white; box-shadow: 0 6px 15px rgba(255, 133, 161, 0.3); }
+        @media (max-width: 768px) {
+            .menu-toggle {
+                display: block;
+            }
+        }
 
-        .ranking-item { display: flex; align-items: center; gap: 15px; padding: 12px 18px; font-size: 1.1rem; font-weight: 900; background: white; border-radius: 18px; margin-bottom: 12px; box-shadow: 0 6px 0 var(--border-color); border: 2px solid transparent; }
-        .ranking-item.rank-1 { border-color: #FFD700; background: #FFFDF0; }
-        .rank-badge { width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; }
-        .rank-pts { margin-left: auto; background: var(--accent-blue); color: white; padding: 5px 12px; border-radius: 15px; font-size: 0.9rem; }
+        .sidebar-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 40px;
+        }
 
-        .main-content { flex: 1; overflow-y: auto; padding: 50px; }
-        .content-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; }
-        .date-navigator { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
-        .current-date-display { font-size: 2.2rem; font-weight: 900; color: var(--text-primary); min-width: 150px; text-align: center; }
-        .date-btn { background: white; border: 3px solid var(--border-color); padding: 12px 20px; border-radius: 15px; cursor: pointer; font-weight: 900; font-size: 1.1rem; }
+        .sidebar-header h1 {
+            font-size: 1.5rem;
+            font-weight: 900;
+            color: var(--accent-pink);
+        }
 
-        .matrix-card { background: var(--card-bg); border-radius: 35px; padding: 35px; box-shadow: 0 12px 0 #FFEDD5; border: 3px solid #FFEDD5; margin-bottom: 35px; }
-        table { width: 100%; border-collapse: collapse; }
-        th, td { padding: 18px; text-align: center; border-bottom: 3px solid #FFF9F2; }
-        th { font-size: 1.1rem; color: var(--text-secondary); }
-        td { font-size: 1.2rem; }
+        .nav-section {
+            margin-bottom: 30px;
+        }
 
-        .cell-check { cursor: pointer; width: 52px; height: 52px; border-radius: 15px; border: 4px solid #F0F0F0; background: #F8F8F8; display: inline-flex; align-items: center; justify-content: center; }
-        .cell-check.checked { background: var(--accent-green); border-color: var(--accent-green); transform: scale(1.1); }
-        .cell-check.checked::after { content: '✨'; font-size: 28px; }
+        .nav-label {
+            font-size: 0.9rem;
+            font-weight: 900;
+            color: var(--text-secondary);
+            margin-bottom: 15px;
+        }
 
-        .goals-row { display: flex; gap: 15px; overflow-x: auto; padding-bottom: 10px; margin-bottom: 20px; }
-        .goal-card { background: white; padding: 25px; border-radius: 30px; min-width: 260px; border: 3px solid #FFEDD5; box-shadow: 0 10px 0 #FFEDD5; }
-        .user-info { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-        .user-info strong { font-size: 1.5rem; }
-        .progress-bar { height: 14px; background: #F0F0F0; border-radius: 7px; overflow: hidden; margin: 12px 0; width: 65%; }
-        .progress-inner { height: 100%; background: linear-gradient(90deg, var(--accent-pink), #FFB6C1); transition: width 0.5s; }
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px 20px;
+            text-decoration: none;
+            color: var(--text-primary);
+            border-radius: 20px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            transition: all 0.2s;
+            margin-bottom: 8px;
+        }
+
+        .nav-item.active {
+            background: var(--accent-pink);
+            color: white;
+            box-shadow: 0 6px 15px rgba(255, 133, 161, 0.3);
+        }
+
+        .ranking-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 12px 18px;
+            font-size: 1.1rem;
+            font-weight: 900;
+            background: white;
+            border-radius: 18px;
+            margin-bottom: 12px;
+            box-shadow: 0 6px 0 var(--border-color);
+            border: 2px solid transparent;
+        }
+
+        .ranking-item.rank-1 {
+            border-color: #FFD700;
+            background: #FFFDF0;
+        }
+
+        .rank-badge {
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .rank-pts {
+            margin-left: auto;
+            background: var(--accent-blue);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.9rem;
+        }
+
+        .main-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 50px;
+        }
+
+        .content-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+
+        .date-navigator {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .current-date-display {
+            font-size: 2.2rem;
+            font-weight: 900;
+            color: var(--text-primary);
+            min-width: 150px;
+            text-align: center;
+        }
+
+        .date-btn {
+            background: white;
+            border: 3px solid var(--border-color);
+            padding: 12px 20px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-weight: 900;
+            font-size: 1.1rem;
+        }
+
+        .matrix-card {
+            background: var(--card-bg);
+            border-radius: 35px;
+            padding: 35px;
+            box-shadow: 0 12px 0 #FFEDD5;
+            border: 3px solid #FFEDD5;
+            margin-bottom: 35px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            padding: 18px;
+            text-align: center;
+            border-bottom: 3px solid #FFF9F2;
+        }
+
+        th {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+        }
+
+        td {
+            font-size: 1.2rem;
+        }
+
+        .cell-check {
+            cursor: pointer;
+            width: 52px;
+            height: 52px;
+            border-radius: 15px;
+            border: 4px solid #F0F0F0;
+            background: #F8F8F8;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .cell-check.checked {
+            background: var(--accent-green);
+            border-color: var(--accent-green);
+            transform: scale(1.1);
+        }
+
+        .cell-check.checked::after {
+            content: '✨';
+            font-size: 28px;
+        }
+
+        .goals-row { 
+            display: flex; 
+            gap: 20px; 
+            overflow-x: auto; 
+            padding: 35px; 
+            margin-bottom: 40px;
+            background-image: url('back.png');
+            background-size: cover;
+            background-position: center;
+            border-radius: 40px;
+            box-shadow: inset 0 0 50px rgba(255,255,255,0.3), 0 10px 25px rgba(0,0,0,0.08);
+            border: 5px solid white;
+        }
+
+        .goal-card { 
+            background: rgba(255, 255, 255, 0.9); 
+            backdrop-filter: blur(10px);
+            padding: 25px; 
+            border-radius: 35px; 
+            min-width: 280px; 
+            border: 3px solid white; 
+            box-shadow: 0 12px 0 rgba(255, 237, 213, 0.5); 
+        }
+
+        .user-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .user-info strong {
+            font-size: 1.5rem;
+        }
+
+        .progress-bar-container {
+            margin: 15px 0;
+        }
+
+        .progress-bar {
+            height: 18px;
+            background: #F0F0F0;
+            border-radius: 9px;
+            overflow: hidden;
+            width: 100%;
+        }
+
+        .progress-inner {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-pink), #FFB6C1);
+            transition: width 0.5s;
+        }
+
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            font-weight: 800;
+            color: var(--text-secondary);
+            margin-top: 8px;
+        }
         
         .reward-item { background: #FAFAFA; padding: 15px; border-radius: 20px; border: 2px dashed #FFEDD5; margin-top: 15px; position: relative; }
         .btn-get { position: absolute; right: 12px; top: 15px; background: var(--accent-yellow); border: none; padding: 10px 20px; border-radius: 12px; font-weight: 900; font-size: 1.2rem; cursor: pointer; animation: bounce 1s infinite; box-shadow: 0 4px 0 #E6B800; }
-        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
 
-        .btn-primary { background: var(--accent-blue); color: white; border: none; padding: 15px 35px; border-radius: 20px; font-weight: 900; cursor: pointer; box-shadow: 0 6px 0 #3E8BFF; font-size: 1.2rem; }
-        .btn-primary.loading { opacity: 0.7; pointer-events: none; }
-        .btn-ghost { background: white; border: 3px solid var(--border-color); padding: 15px; border-radius: 20px; font-weight: 900; cursor: pointer; width: 100%; font-size: 1.1rem; }
+        @keyframes bounce {
 
-        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.3); backdrop-filter: blur(5px); z-index: 3000; align-items: center; justify-content: center; }
-        .modal-content { background: white; padding: 35px; border-radius: 40px; border: 5px solid #FFEDD5; width: 90%; max-width: 600px; position: relative; max-height: 85vh; overflow: hidden; display: flex; flex-direction: column; }
-        .modal-scroll { overflow-y: auto; flex: 1; margin: 20px 0; }
-        .close-modal { position: absolute; top: 15px; right: 20px; font-size: 2rem; font-weight: 900; cursor: pointer; }
-        input[type="text"], input[type="number"], select { 
-            width: 100%; padding: 15px 20px; border-radius: 15px; border: 3px solid #F0F0F0; 
-            font-size: 1.2rem; font-family: inherit; font-weight: 800; color: var(--text-primary);
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-3px);
+            }
+        }
+
+        .btn-primary {
+            background: var(--accent-blue);
+            color: white;
+            border: none;
+            padding: 15px 35px;
+            border-radius: 20px;
+            font-weight: 900;
+            cursor: pointer;
+            box-shadow: 0 6px 0 #3E8BFF;
+            font-size: 1.2rem;
+        }
+
+        .btn-primary.loading {
+            opacity: 0.7;
+            pointer-events: none;
+        }
+
+        .btn-ghost {
+            background: white;
+            border: 3px solid var(--border-color);
+            padding: 15px;
+            border-radius: 20px;
+            font-weight: 900;
+            cursor: pointer;
+            width: 100%;
+            font-size: 1.1rem;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(5px);
+            z-index: 3000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 35px;
+            border-radius: 40px;
+            border: 5px solid #FFEDD5;
+            width: 90%;
+            max-width: 600px;
+            position: relative;
+            max-height: 85vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .modal-scroll {
+            overflow-y: auto;
+            flex: 1;
+            margin: 20px 0;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 2rem;
+            font-weight: 900;
+            cursor: pointer;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        select {
+            width: 100%;
+            padding: 15px 20px;
+            border-radius: 15px;
+            border: 3px solid #F0F0F0;
+            font-size: 1.2rem;
+            font-family: inherit;
+            font-weight: 800;
+            color: var(--text-primary);
             transition: border-color 0.2s;
         }
-        input:focus, select:focus { border-color: var(--accent-pink); outline: none; }
+
+        input:focus,
+        select:focus {
+            border-color: var(--accent-pink);
+            outline: none;
+        }
     </style>
 </head>
 
 <body>
     <div id="app">
         <aside class="sidebar">
-            <div class="sidebar-header"><span>🌈</span><h1>famtsk</h1></div>
+            <div class="sidebar-header"><span>🌈</span>
+                <h1>famtsk</h1>
+            </div>
             <nav class="sidebar-nav">
-                <div class="nav-section"><p class="nav-label">ホーム</p><a href="#" class="nav-item active">🏠 みんな</a><a href="#" id="view-history-btn" class="nav-item">🕰️ 履歴</a></div>
-                <div class="nav-section"><p class="nav-label">ランキング</p><div id="ranking-list"></div></div>
+                <div class="nav-section">
+                    <p class="nav-label">ホーム</p><a href="#" class="nav-item active">🏠 みんな</a><a href="#"
+                        id="view-history-btn" class="nav-item">🕰️ 履歴</a>
+                </div>
+                <div class="nav-section">
+                    <p class="nav-label">ランキング</p>
+                    <div id="ranking-list"></div>
+                </div>
             </nav>
             <div class="sidebar-footer"><button id="manage-rewards-btn" class="btn-ghost">🎨 ご褒美の設定</button></div>
         </aside>
@@ -166,68 +492,132 @@
             </header>
             <div class="dashboard-grid">
                 <section class="goals-row" id="goals-container"></section>
-                <div class="matrix-card"><h3>⭐ デイリー</h3><table><thead><tr><th style="text-align:left;">内容</th><th>ママ</th><th>パパ</th><th>けん</th><th>つき</th></tr></thead><tbody id="daily-body"></tbody></table></div>
-                <div class="matrix-card"><h3>📅 定期</h3><table><thead><tr><th style="text-align:left;">内容</th><th>ママ</th><th>パパ</th><th>けん</th><th>つき</th></tr></thead><tbody id="regular-body"></tbody></table></div>
+                <div class="matrix-card">
+                    <h3>⭐ デイリー</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="text-align:left;">内容</th>
+                                <th>ママ</th>
+                                <th>パパ</th>
+                                <th>けん</th>
+                                <th>つき</th>
+                            </tr>
+                        </thead>
+                        <tbody id="daily-body"></tbody>
+                    </table>
+                </div>
+                <div class="matrix-card">
+                    <h3>📅 定期</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="text-align:left;">内容</th>
+                                <th>ママ</th>
+                                <th>パパ</th>
+                                <th>けん</th>
+                                <th>つき</th>
+                            </tr>
+                        </thead>
+                        <tbody id="regular-body"></tbody>
+                    </table>
+                </div>
             </div>
         </main>
 
-        <div id="report-modal" class="modal"><div class="modal-content"><span class="close-modal">&times;</span><h3>🤖 AIレポート</h3><div id="report-container" class="modal-scroll"></div><div style="text-align:center;margin-top:15px;"><button class="btn-primary close-modal" style="display:inline-block; width:120px; padding:8px 0; font-size:0.85rem; border-radius:12px; height:auto; box-shadow:0 3px 0 #3E8BFF;">OK!</button></div></div></div>
-        <div id="history-modal" class="modal"><div class="modal-content"><span class="close-modal">&times;</span><h3>🕰️ 履歴</h3><div id="history-list" class="modal-scroll"></div></div></div>
-        <div id="reward-modal" class="modal"><div class="modal-content"><span class="close-modal">&times;</span><h3>目標設定</h3><select id="reward-user-select" style="width:100%; padding:10px; margin-top:10px;"></select><div id="reward-list" class="modal-scroll"></div><hr style="margin:10px 0;"><h4>追加</h4><div style="display:flex; flex-direction:column; gap:10px; margin-top:10px;"><input type="text" id="reward-name-input" placeholder="名前"><input type="number" id="reward-points-input" placeholder="ポイント"><button id="add-reward-btn" class="btn-primary">追加</button></div></div></div>
+        <div id="report-modal" class="modal">
+            <div class="modal-content"><span class="close-modal">&times;</span>
+                <h3>🤖 AIレポート</h3>
+                <div id="report-container" class="modal-scroll"></div>
+                <div style="text-align:center;margin-top:15px;"><button class="btn-primary close-modal"
+                        style="display:inline-block; width:120px; padding:8px 0; font-size:0.85rem; border-radius:12px; height:auto; box-shadow:0 3px 0 #3E8BFF;">OK!</button>
+                </div>
+            </div>
+        </div>
+        <div id="history-modal" class="modal">
+            <div class="modal-content"><span class="close-modal">&times;</span>
+                <h3>🕰️ 履歴</h3>
+                <div id="history-list" class="modal-scroll"></div>
+            </div>
+        </div>
+        <div id="reward-modal" class="modal">
+            <div class="modal-content"><span class="close-modal">&times;</span>
+                <h3>目標設定</h3><select id="reward-user-select"
+                    style="width:100%; padding:10px; margin-top:10px;"></select>
+                <div id="reward-list" class="modal-scroll"></div>
+                <hr style="margin:10px 0;">
+                <h4>追加</h4>
+                <div style="display:flex; flex-direction:column; gap:10px; margin-top:10px;"><input type="text"
+                        id="reward-name-input" placeholder="名前"><input type="number" id="reward-points-input"
+                        placeholder="ポイント"><button id="add-reward-btn" class="btn-primary">追加</button></div>
+            </div>
+        </div>
     </div>
 
     <script>
         const SUPABASE_URL = 'https://klrmecsympcysbyublqw.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtscm1lY3N5bXBjeXNieXVibHF3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY2NjI4NDYsImV4cCI6MjA5MjIzODg0Nn0.FSOy4e1aSl8IOFG8pWNbXlmEn8ZlZRa2YQiYC4ptpAo';
         let supabaseClient = null;
-        try { if (SUPABASE_URL.includes('supabase.co')) supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY); } catch(e){}
+        try { if (SUPABASE_URL.includes('supabase.co')) supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY); } catch (e) { }
 
-        const USERS = [{id:'mama',name:'ママ'},{id:'papa',name:'パパ'},{id:'ken',name:'けんちゃん'},{id:'tsuki',name:'つきちゃん'}];
-        const DAILY_TASKS = [{id:'d1',name:'掃除機',points:2},{id:'d2',name:'おもちゃ片付け',points:5},{id:'d3',name:'ゴミ出し',points:2},{id:'d4',name:'花の水やり',points:4},{id:'d5',name:'宿題',points:6},{id:'d6',name:'ピアノ練習',points:7},{id:'d7',name:'お風呂掃除',points:2},{id:'d8',name:'食器片付け',points:3},{id:'d9',name:'洗濯物たたみ',points:3},{id:'d10',name:'歯磨き',points:4}];
-        const REGULAR_TASKS = [{id:'r1',name:'トイレ掃除',points:4},{id:'r2',name:'花の肥料やり',points:2},{id:'r3',name:'お風呂のカビ取り',points:6},{id:'r4',name:'冷蔵庫整理',points:4},{id:'r5',name:'布団干し',points:4},{id:'r6',name:'コンロ掃除',points:4},{id:'r7',name:'玄関掃除',points:4},{id:'r8',name:'草むしり',points:8},{id:'r9',name:'ケルヒャー',points:10},{id:'r10',name:'窓拭き',points:6}];
+        const USERS = [{ id: 'mama', name: 'ママ' }, { id: 'papa', name: 'パパ' }, { id: 'ken', name: 'けんちゃん' }, { id: 'tsuki', name: 'つきちゃん' }];
+        const DAILY_TASKS = [{ id: 'd1', name: '掃除機', points: 2 }, { id: 'd2', name: 'おもちゃ片付け', points: 5 }, { id: 'd3', name: 'ゴミ出し', points: 2 }, { id: 'd4', name: '花の水やり', points: 4 }, { id: 'd5', name: '宿題', points: 6 }, { id: 'd6', name: 'ピアノ練習', points: 7 }, { id: 'd7', name: 'お風呂掃除', points: 2 }, { id: 'd8', name: '食器片付け', points: 3 }, { id: 'd9', name: '洗濯物たたみ', points: 3 }, { id: 'd10', name: '歯磨き', points: 4 }];
+        const REGULAR_TASKS = [{ id: 'r1', name: 'トイレ掃除', points: 4 }, { id: 'r2', name: '花の肥料やり', points: 2 }, { id: 'r3', name: 'お風呂のカビ取り', points: 6 }, { id: 'r4', name: '冷蔵庫整理', points: 4 }, { id: 'r5', name: '布団干し', points: 4 }, { id: 'r6', name: 'コンロ掃除', points: 4 }, { id: 'r7', name: '玄関掃除', points: 4 }, { id: 'r8', name: '草むしり', points: 8 }, { id: 'r9', name: 'ケルヒャー', points: 10 }, { id: 'r10', name: '窓拭き', points: 6 }];
         const AI_PHRASES = ["さすがですね！", "素晴らしい！", "天才かも！", "家族の誇りです！", "今日も最高！"];
 
         let activeDate = new Date();
-        let localState = { users: USERS.map(u=>({...u, total_points:0})), rewards: [], tasks_done: [] };
+        let localState = { users: USERS.map(u => ({ ...u, total_points: 0 })), rewards: [], tasks_done: [] };
         const isDB = () => supabaseClient !== null && SUPABASE_ANON_KEY && !SUPABASE_ANON_KEY.includes('YOUR_ANON_KEY');
 
-        const loadLocal = () => { 
-            const raw = localStorage.getItem('famtsk_vfinal_safe'); 
-            if(raw) {
-                try { localState = JSON.parse(raw); } catch(e) {}
+        const loadLocal = () => {
+            const raw = localStorage.getItem('famtsk_vfinal_safe');
+            if (raw) {
+                try { localState = JSON.parse(raw); } catch (e) { }
             }
-            if(!localState.rewards) localState.rewards = [];
-            if(!localState.tasks_done) localState.tasks_done = [];
-            if(!localState.users) localState.users = USERS.map(u=>({...u, total_points:0}));
+            if (!localState.rewards) localState.rewards = [];
+            if (!localState.tasks_done) localState.tasks_done = [];
+            if (!localState.users) localState.users = USERS.map(u => ({ ...u, total_points: 0 }));
         };
         const saveLocal = () => localStorage.setItem('famtsk_vfinal_safe', JSON.stringify(localState));
 
         const render = () => {
-            document.getElementById('date-display').textContent = `${activeDate.getMonth()+1}月${activeDate.getDate()}日`;
+            document.getElementById('date-display').textContent = `${activeDate.getMonth() + 1}月${activeDate.getDate()}日`;
             const dStr = activeDate.toLocaleDateString();
             const doneToday = localState.tasks_done.filter(t => new Date(t.created_at).toLocaleDateString() === dStr);
 
             const drawRows = (tasks) => tasks.map(t => `<tr><td style="text-align:left;font-weight:900;">${t.name}<span style="color:var(--accent-blue);font-size:0.7rem;margin-left:5px;">+${t.points}</span></td>${USERS.map(u => {
                 const checked = doneToday.some(d => d.user_id === u.id && d.task_id === t.id);
-                return `<td><div class="cell-check ${checked?'checked':''}" onclick="toggleUI('${u.id}','${t.id}','${t.name}',${t.points})"></div></td>`;
+                return `<td><div class="cell-check ${checked ? 'checked' : ''}" onclick="toggleUI('${u.id}','${t.id}','${t.name}',${t.points})"></div></td>`;
             }).join('')}</tr>`).join('');
             document.getElementById('daily-body').innerHTML = drawRows(DAILY_TASKS);
             document.getElementById('regular-body').innerHTML = drawRows(REGULAR_TASKS);
 
-            const sorted = [...localState.users].sort((a,b)=>b.total_points - a.total_points);
-            document.getElementById('ranking-list').innerHTML = sorted.map((u,i) => {
-                const r = i+1; const m = r==1?'👑':r==2?'🥈':r==3?'🥉':'✨';
+            const sorted = [...localState.users].sort((a, b) => b.total_points - a.total_points);
+            document.getElementById('ranking-list').innerHTML = sorted.map((u, i) => {
+                const r = i + 1; const m = r == 1 ? '👑' : r == 2 ? '🥈' : r == 3 ? '🥉' : '✨';
                 return `<div class="ranking-item rank-${r}"><div class="rank-badge">${m}</div><span>${u.name}</span><span class="rank-pts">${u.total_points}pt</span></div>`;
             }).join('');
 
             document.getElementById('goals-container').innerHTML = localState.users.map(u => {
                 const myR = localState.rewards.filter(r => r.user_id === u.id);
                 const rHtml = myR.map(r => {
-                    const p = Math.min(100, (u.total_points/r.points)*100);
+                    const p = Math.floor(Math.min(100, (u.total_points / r.points) * 100));
+                    const remaining = Math.max(0, r.points - u.total_points);
                     const canGet = u.total_points >= r.points;
-                    return `<div class="reward-item"><strong>🎁 ${r.name}</strong><div class="progress-bar"><div class="progress-inner" style="width:${p}%"></div></div>${canGet?`<button class="btn-get" onclick="claimReward('${u.id}','${r.id}',${r.points},'${r.name}')">GET!</button>`:''}</div>`;
+                    return `
+                        <div class="reward-item">
+                            <div style="font-size:1.1rem; font-weight:900; margin-bottom:8px;">🎁 ${r.name}</div>
+                            <div class="progress-bar-container">
+                                <div class="progress-bar"><div class="progress-inner" style="width:${p}%"></div></div>
+                                <div class="progress-info">
+                                    <span>あと ${remaining} pt</span>
+                                    <span>${p}%</span>
+                                </div>
+                            </div>
+                            ${canGet ? `<button class="btn-get" onclick="claimReward('${u.id}','${r.id}',${r.points},'${r.name}')">GET!</button>` : ''}
+                        </div>`;
                 }).join('');
-                return `<div class="goal-card"><strong>${u.name} (${u.total_points}pt)</strong>${rHtml||'<p style="color:#ccc;font-size:0.7rem;">目標なし</p>'}</div>`;
+                return `<div class="goal-card"><strong>${u.name} (${u.total_points}pt)</strong>${rHtml || '<p style="color:#666;font-size:0.9rem;margin-top:10px;">目標なし</p>'}</div>`;
             }).join('');
         };
 
@@ -235,17 +625,17 @@
             const dStr = activeDate.toLocaleDateString();
             const idx = localState.tasks_done.findIndex(t => t.user_id === uId && t.task_id === tId && new Date(t.created_at).toLocaleDateString() === dStr);
             const user = localState.users.find(u => u.id === uId);
-            if(idx > -1) { localState.tasks_done.splice(idx,1); if(user) user.total_points -= pts; }
-            else { localState.tasks_done.push({ user_id: uId, task_id: tId, task_name: name, points: pts, created_at: activeDate.toISOString() }); if(user) user.total_points += pts; }
+            if (idx > -1) { localState.tasks_done.splice(idx, 1); if (user) user.total_points -= pts; }
+            else { localState.tasks_done.push({ user_id: uId, task_id: tId, task_name: name, points: pts, created_at: activeDate.toISOString() }); if (user) user.total_points += pts; }
             saveLocal(); render();
         };
 
         window.claimReward = async (uId, rId, pts, rName) => {
-            if(!confirm(`${rName}をゲットしたね！${pts}ptつかいますか？`)) return;
+            if (!confirm(`${rName}をゲットしたね！${pts}ptつかいますか？`)) return;
             const user = localState.users.find(u => u.id === uId);
-            if(user) {
+            if (user) {
                 user.total_points -= pts;
-                if(isDB()) { await supabaseClient.from('family_users').update({ total_points: user.total_points }).eq('id', uId); await supabaseClient.from('family_rewards').delete().eq('id', rId); }
+                if (isDB()) { await supabaseClient.from('family_users').update({ total_points: user.total_points }).eq('id', uId); await supabaseClient.from('family_rewards').delete().eq('id', rId); }
                 localState.rewards = localState.rewards.filter(r => String(r.id) !== String(rId));
                 saveLocal(); render();
             }
@@ -253,70 +643,70 @@
 
         window.renderRewardList = () => {
             const el = document.getElementById('reward-user-select');
-            if(!el) return;
+            if (!el) return;
             const uId = el.value;
             const myR = localState.rewards.filter(r => r.user_id === uId);
-            document.getElementById('reward-list').innerHTML = myR.map(r => `<div style="display:flex;justify-content:space-between;padding:8px;border-bottom:1px solid #eee;"><span>${r.name} (${r.points}pt)</span><button onclick="deleteR('${r.id}')">削除</button></div>`).join('') || '<p style="color:#ccc;text-align:center;padding:20px;">なし</p>';
+            document.getElementById('reward-list').innerHTML = myR.map(r => `<div style="display:flex;justify-content:space-between;padding:12px;border-bottom:1px solid #eee;align-items:center;"><span>${r.name} (${r.points}pt)</span><button onclick="deleteR('${r.id}')" style="background:none;border:none;color:var(--accent-pink);font-weight:900;cursor:pointer;">削除</button></div>`).join('') || '<p style="color:#ccc;text-align:center;padding:20px;">なし</p>';
         };
 
         window.deleteR = async (id) => {
-            if(isDB()) await supabaseClient.from('family_rewards').delete().eq('id', id);
+            if (isDB()) await supabaseClient.from('family_rewards').delete().eq('id', id);
             localState.rewards = localState.rewards.filter(r => String(r.id) !== String(id));
             saveLocal(); renderRewardList(); render();
         };
 
         const setupEvents = () => {
             const $ = (id) => document.getElementById(id);
-            const safeSet = (id, fn) => { const el = $(id); if(el) el.onclick = fn; };
+            const safeSet = (id, fn) => { const el = $(id); if (el) el.onclick = fn; };
 
-            safeSet('prev-day', () => { activeDate.setDate(activeDate.getDate()-1); render(); });
-            safeSet('next-day', () => { activeDate.setDate(activeDate.getDate()+1); render(); });
+            safeSet('prev-day', () => { activeDate.setDate(activeDate.getDate() - 1); render(); });
+            safeSet('next-day', () => { activeDate.setDate(activeDate.getDate() + 1); render(); });
             safeSet('today-btn', () => { activeDate = new Date(); render(); });
             safeSet('menu-btn', () => document.querySelector('.sidebar').classList.toggle('open'));
-            safeSet('manage-rewards-btn', () => { $('reward-modal').style.display='flex'; renderRewardList(); });
-            
+            safeSet('manage-rewards-btn', () => { $('reward-modal').style.display = 'flex'; renderRewardList(); });
+
             const sel = $('reward-user-select');
-            if(sel) sel.onchange = renderRewardList;
+            if (sel) sel.onchange = renderRewardList;
 
             $('add-reward-btn').onclick = async () => {
                 const uId = $('reward-user-select').value; const n = $('reward-name-input').value; const p = parseInt($('reward-points-input').value);
-                if(n && n.trim() !== "" && p > 0){
+                if (n && n.trim() !== "" && p > 0) {
                     const entry = { user_id: uId, name: n, points: p };
-                    if(isDB()) {
+                    if (isDB()) {
                         const { data, error } = await supabaseClient.from('family_rewards').insert([entry]).select();
                         if (error) { console.error("Reward Save Error:", error); alert("保存に失敗しました。"); return; }
                         if (data && data[0]) localState.rewards.push(data[0]);
                     } else {
                         localState.rewards.push({ ...entry, id: Date.now() });
                     }
-                    $('reward-name-input').value=''; $('reward-points-input').value='';
+                    $('reward-name-input').value = ''; $('reward-points-input').value = '';
                     saveLocal(); renderRewardList(); render();
                 }
             };
 
             safeSet('btn-save', async () => {
-                const btn = $('btn-save'); btn.classList.add('loading'); btn.textContent="保存中...";
-                if(isDB()) {
-                    const ds = new Date(activeDate); ds.setHours(0,0,0,0); const de = new Date(activeDate); de.setHours(23,59,59,999);
-                    const {data:dbTasks} = await supabaseClient.from('task_history').select('*').gte('created_at', ds.toISOString()).lte('created_at', de.toISOString());
+                const btn = $('btn-save'); btn.classList.add('loading'); btn.textContent = "保存中...";
+                if (isDB()) {
+                    const ds = new Date(activeDate); ds.setHours(0, 0, 0, 0); const de = new Date(activeDate); de.setHours(23, 59, 59, 999);
+                    const { data: dbTasks } = await supabaseClient.from('task_history').select('*').gte('created_at', ds.toISOString()).lte('created_at', de.toISOString());
                     const localDay = localState.tasks_done.filter(t => new Date(t.created_at).toLocaleDateString() === activeDate.toLocaleDateString());
-                    for(const dt of dbTasks||[]) if(!localDay.find(l => l.user_id==dt.user_id && l.task_id==dt.task_id)) await supabaseClient.from('task_history').delete().eq('id', dt.id);
-                    for(const lt of localDay) if(!(dbTasks||[]).find(dt => dt.user_id==lt.user_id && dt.task_id==lt.task_id)) { const {id,...rest} = lt; await supabaseClient.from('task_history').insert([rest]); }
-                    for(const u of localState.users) await supabaseClient.from('family_users').update({ total_points: u.total_points }).eq('id', u.id);
+                    for (const dt of dbTasks || []) if (!localDay.find(l => l.user_id == dt.user_id && l.task_id == dt.task_id)) await supabaseClient.from('task_history').delete().eq('id', dt.id);
+                    for (const lt of localDay) if (!(dbTasks || []).find(dt => dt.user_id == lt.user_id && dt.task_id == lt.task_id)) { const { id, ...rest } = lt; await supabaseClient.from('task_history').insert([rest]); }
+                    for (const u of localState.users) await supabaseClient.from('family_users').update({ total_points: u.total_points }).eq('id', u.id);
                 }
-                btn.classList.remove('loading'); btn.textContent="決定！レポート";
+                btn.classList.remove('loading'); btn.textContent = "決定！レポート";
                 const dStr = activeDate.toLocaleDateString();
                 const doneToday = localState.tasks_done.filter(t => new Date(t.created_at).toLocaleDateString() === dStr);
                 const report = USERS.map(u => {
-                    const pts = doneToday.filter(d => d.user_id === u.id).reduce((s,c)=>s+c.points,0);
-                    if(pts === 0) return null;
-                    return `<div class="report-card"><strong>👤 ${u.name} (+${pts}pt)</strong><p style="margin-top:10px;">${AI_PHRASES[Math.floor(Math.random()*AI_PHRASES.length)]}</p></div>`;
-                }).filter(x=>x).join('') || "<p>今日の記録はありません</p>";
-                $('report-container').innerHTML = report; $('report-modal').style.display='flex';
+                    const pts = doneToday.filter(d => d.user_id === u.id).reduce((s, c) => s + c.points, 0);
+                    if (pts === 0) return null;
+                    return `<div class="report-card"><strong>👤 ${u.name} (+${pts}pt)</strong><p style="margin-top:10px;">${AI_PHRASES[Math.floor(Math.random() * AI_PHRASES.length)]}</p></div>`;
+                }).filter(x => x).join('') || "<p>今日の記録はありません</p>";
+                $('report-container').innerHTML = report; $('report-modal').style.display = 'flex';
             });
 
             safeSet('view-history-btn', () => {
-                $('history-list').innerHTML = localState.tasks_done.slice().reverse().slice(0,50).map(h => `<div style="padding:10px; border-bottom:1px solid #eee;"><strong>${h.task_name}</strong> by ${h.user_id} (${new Date(h.created_at).toLocaleDateString()})</div>`).join('');
+                $('history-list').innerHTML = localState.tasks_done.slice().reverse().slice(0, 50).map(h => `<div style="padding:10px; border-bottom:1px solid #eee;"><strong>${h.task_name}</strong> by ${h.user_id} (${new Date(h.created_at).toLocaleDateString()})</div>`).join('');
                 $('history-modal').style.display = 'flex';
                 document.querySelector('.sidebar').classList.remove('open');
             });
@@ -326,10 +716,10 @@
         (async () => {
             loadLocal();
             const sel = document.getElementById('reward-user-select');
-            if(sel) USERS.forEach(u => sel.add(new Option(u.name, u.id)));
+            if (sel) USERS.forEach(u => sel.add(new Option(u.name, u.id)));
             render();
-            if(isDB()) {
-                const {data:u} = await supabaseClient.from('family_users').select('*');
+            if (isDB()) {
+                const { data: u } = await supabaseClient.from('family_users').select('*');
                 const {data:r} = await supabaseClient.from('family_rewards').select('*');
                 const {data:h} = await supabaseClient.from('task_history').select('*');
                 if(u) localState.users = u; if(r) localState.rewards = r; if(h) localState.tasks_done = h;
@@ -339,4 +729,5 @@
         })();
     </script>
 </body>
+
 </html>
