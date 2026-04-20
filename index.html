@@ -182,7 +182,15 @@
         let localState = { users: USERS.map(u=>({...u, total_points:0})), rewards: [], tasks_done: [] };
         const isDB = () => supabaseClient !== null && SUPABASE_ANON_KEY && !SUPABASE_ANON_KEY.includes('YOUR_ANON_KEY');
 
-        const loadLocal = () => { const raw = localStorage.getItem('famtsk_vfinal_safe'); if(raw) localState = JSON.parse(raw); };
+        const loadLocal = () => { 
+            const raw = localStorage.getItem('famtsk_vfinal_safe'); 
+            if(raw) {
+                try { localState = JSON.parse(raw); } catch(e) {}
+            }
+            if(!localState.rewards) localState.rewards = [];
+            if(!localState.tasks_done) localState.tasks_done = [];
+            if(!localState.users) localState.users = USERS.map(u=>({...u, total_points:0}));
+        };
         const saveLocal = () => localStorage.setItem('famtsk_vfinal_safe', JSON.stringify(localState));
 
         const render = () => {
@@ -261,15 +269,21 @@
             const sel = $('reward-user-select');
             if(sel) sel.onchange = renderRewardList;
 
-            safeSet('add-reward-btn', async () => {
+            $('add-reward-btn').onclick = async () => {
                 const uId = $('reward-user-select').value; const n = $('reward-name-input').value; const p = parseInt($('reward-points-input').value);
-                if(n && p){
-                    const entry = { id: Date.now(), user_id: uId, name: n, points: p };
-                    if(isDB()) await supabaseClient.from('family_rewards').insert([entry]);
-                    localState.rewards.push(entry); $('reward-name-input').value=''; $('reward-points-input').value='';
+                if(n && n.trim() !== "" && p > 0){
+                    const entry = { user_id: uId, name: n, points: p };
+                    if(isDB()) {
+                        const { data, error } = await supabaseClient.from('family_rewards').insert([entry]).select();
+                        if (error) { console.error("Reward Save Error:", error); alert("保存に失敗しました。"); return; }
+                        if (data && data[0]) localState.rewards.push(data[0]);
+                    } else {
+                        localState.rewards.push({ ...entry, id: Date.now() });
+                    }
+                    $('reward-name-input').value=''; $('reward-points-input').value='';
                     saveLocal(); renderRewardList(); render();
                 }
-            });
+            };
 
             safeSet('btn-save', async () => {
                 const btn = $('btn-save'); btn.classList.add('loading'); btn.textContent="保存中...";
