@@ -45,6 +45,7 @@
         #app {
             display: flex;
             height: 100vh;
+            overflow: hidden;
         }
 
         .sidebar {
@@ -55,7 +56,34 @@
             padding: 24px;
             display: flex;
             flex-direction: column;
+            transition: transform 0.3s ease;
+            z-index: 2000;
         }
+
+        /* Mobile specific styles */
+        @media (max-width: 768px) {
+            .sidebar {
+                position: fixed;
+                left: 0; top: 0; bottom: 0;
+                transform: translateX(-100%);
+            }
+            .sidebar.open { transform: translateX(0); }
+            .main-content { padding: 20px !important; }
+            .content-header { flex-direction: column; gap: 15px; align-items: stretch !important; }
+            .date-navigator { justify-content: center; font-size: 0.8rem; }
+            .current-date-display { font-size: 1.2rem; }
+            .matrix-card { padding: 15px !important; overflow-x: auto; }
+            table { min-width: 400px; }
+            #btn-save { width: 100%; }
+        }
+
+        .menu-toggle {
+            display: none;
+            background: white; border: 2px solid var(--border-color);
+            padding: 10px; border-radius: 12px; cursor: pointer;
+            font-size: 1.2rem; margin-right: 15px;
+        }
+        @media (max-width: 768px) { .menu-toggle { display: block; } }
 
         .sidebar-header {
             display: flex;
@@ -244,11 +272,13 @@
 
         <main class="main-content">
             <header class="content-header">
-                <div class="date-navigator">
-                    <button class="date-btn" id="prev-day">＜ 前の日</button>
-                    <div class="current-date-display" id="date-display">...</div>
-                    <button class="date-btn" id="today-btn">今日</button>
-                    <button class="date-btn" id="next-day">次の日 ＞</button>
+                <div style="display:flex; align-items:center;">
+                    <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
+                    <div class="date-navigator">
+                        <button class="date-btn" id="prev-day">＜ 昨日</button>
+                        <div class="current-date-display" id="date-display">...</div>
+                        <button class="date-btn" id="next-day">次 ＞</button>
+                    </div>
                 </div>
                 <button id="btn-save" class="btn-primary">決定！レポートを見る</button>
             </header>
@@ -417,6 +447,15 @@
         };
 
         window.closeModal = (id) => document.getElementById(id).style.display = 'none';
+
+        window.toggleSidebar = () => {
+            const sb = document.querySelector('.sidebar');
+            sb.classList.toggle('open');
+        };
+
+        const hideSidebarOnMove = () => {
+            if (window.innerWidth <= 768) document.querySelector('.sidebar').classList.remove('open');
+        };
 
         (async () => {
             loadLocal();
