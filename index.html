@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>famtsk | Family Task Management</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;700;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        :root {
+            --bg-color: #FFF9F2;
+            --sidebar-bg: rgba(255, 255, 255, 0.85);
+            --card-bg: #FFFFFF;
+            --accent-blue: #54A1FF;
+            --accent-pink: #FF85A1;
+            --accent-yellow: #FFD25E;
+            --accent-green: #7DDE92;
+            --border-color: #FFEDD5;
+            --text-primary: #5C4033;
+            --text-secondary: #A08C7D;
+            --glass-blur: blur(15px);
+            --sidebar-width: 240px;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-font-smoothing: antialiased; }
+
+        body {
+            font-family: 'Zen Maru Gothic', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            overflow: hidden;
+            background-image: radial-gradient(#FFEDD5 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+
+        #app { display: flex; height: 100vh; }
+
+        .sidebar {
+            width: var(--sidebar-width);
+            background: var(--sidebar-bg);
+            backdrop-filter: var(--glass-blur);
+            border-right: 3px solid #FFEDD5;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar-header { display: flex; align-items: center; gap: 10px; margin-bottom: 40px; }
+        .sidebar-header h1 { font-size: 1.5rem; font-weight: 900; color: var(--accent-pink); }
+
+        .nav-section { margin-bottom: 30px; }
+        .nav-label { font-size: 0.75rem; font-weight: 900; color: var(--text-secondary); margin-bottom: 12px; letter-spacing: 0.1em; }
+
+        .nav-item {
+            display: flex; align-items: center; gap: 12px; padding: 12px 16px;
+            text-decoration: none; color: var(--text-primary); border-radius: 15px;
+            font-size: 0.95rem; font-weight: 700; transition: all 0.3s; margin-bottom: 5px;
+        }
+        .nav-item:hover { background: rgba(255,255,255,0.5); }
+        .nav-item.active { background: var(--accent-pink); color: white; box-shadow: 0 4px 12px rgba(255, 133, 161, 0.3); }
+
+        .main-content { flex: 1; overflow-y: auto; padding: 40px; }
+        .content-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px; }
+        .header-info h2 { font-size: 2rem; font-weight: 900; }
+
+        .dashboard-grid { display: grid; gap: 32px; }
+
+        .matrix-card {
+            background: var(--card-bg); border-radius: 30px; padding: 30px;
+            box-shadow: 0 10px 0 #FFEDD5; border: 2px solid #FFEDD5;
+        }
+        .card-header { margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
+        .card-header h3 { font-size: 1.3rem; font-weight: 900; color: var(--accent-blue); }
+
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 15px; text-align: center; border-bottom: 2px solid #FFF9F2; }
+        th { font-size: 0.85rem; color: var(--text-secondary); font-weight: 800; }
+
+        .task-info { text-align: left; }
+        .task-name { font-weight: 900; }
+        .task-meta { font-size: 0.7rem; color: var(--accent-blue); font-weight: 800; }
+        .task-date { font-size: 0.6rem; color: #AAA; }
+
+        .cell-check {
+            cursor: pointer; width: 32px; height: 32px; border-radius: 10px;
+            border: 3px solid #EEE; background: #F8F8F8;
+            display: inline-flex; align-items: center; justify-content: center;
+        }
+        .cell-check.checked { background: var(--accent-green); border-color: var(--accent-green); transform: scale(1.1); }
+        .cell-check.checked::after { content: '✨'; font-size: 16px; }
+
+        .goals-row { display: flex; gap: 20px; overflow-x: auto; padding-bottom: 15px; }
+        .goal-card { background: var(--card-bg); padding: 24px; border-radius: 25px; min-width: 220px; box-shadow: 0 8px 0 #FFEDD5; border: 2px solid #FFEDD5; }
+        .user-info { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .user-info strong { font-size: 1.2rem; color: var(--accent-pink); }
+        .user-info .points { font-size: 1.4rem; font-weight: 900; color: var(--accent-blue); }
+
+        .reward-item { background: #FDFDFD; padding: 12px; border-radius: 15px; border: 1px dashed #FFEDD5; margin-top: 8px; }
+        .progress-bar { height: 10px; background: #F0F0F0; border-radius: 5px; overflow: hidden; margin: 8px 0; }
+        .progress-inner { height: 100%; background: linear-gradient(90deg, var(--accent-pink), #FFB6C1); width: 0%; transition: width 1s; }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-blue), #76B9FF); color: white; border: none;
+            padding: 12px 28px; border-radius: 20px; font-weight: 900; cursor: pointer; box-shadow: 0 4px 0 #3E8BFF;
+        }
+        .btn-primary:active { transform: translateY(2px); box-shadow: 0 2px 0 #3E8BFF; }
+        .btn-ghost { background: white; border: 2px solid var(--border-color); padding: 10px; border-radius: 15px; font-weight: 800; cursor: pointer; width: 100%; margin-top: 10px; }
+
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.3); backdrop-filter: blur(5px); z-index: 1000; align-items: center; justify-content: center; }
+        .modal-content { background: white; padding: 20px 40px 40px; border-radius: 35px; border: 5px solid #FFEDD5; width: 90%; max-width: 600px; position: relative; max-height: 85vh; display: flex; flex-direction: column; }
+        .modal-scroll { overflow-y: auto; flex: 1; padding: 10px 5px; }
+        .close-modal { position: absolute; top: 20px; right: 20px; cursor: pointer; font-size: 1.5rem; font-weight: bold; }
+
+        .ranking-item { display: flex; align-items: center; gap: 10px; padding: 8px; font-size: 0.9rem; font-weight: 700; }
+        .rank-num { width: 24px; color: var(--text-secondary); }
+
+        .history-item { display: flex; justify-content: space-between; align-items: center; padding: 12px; border-bottom: 1px solid #FFF9F2; }
+        .history-item .task { font-weight: 800; font-size: 0.9rem; }
+        .history-item .pts { font-weight: 900; color: var(--accent-blue); }
+
+        /* Report Styles */
+        .report-card { background: #FDF9F5; border-radius: 20px; padding: 20px; margin-bottom: 15px; border-left: 6px solid var(--accent-pink); }
+        .report-user { font-weight: 900; color: var(--accent-pink); margin-bottom: 8px; display: flex; justify-content: space-between; }
+        .report-comment { font-size: 0.9rem; line-height: 1.6; color: var(--text-primary); }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <span style="font-size:2rem;">🌈</span>
+                <h1>famtsk</h1>
+            </div>
+            <nav class="sidebar-nav">
+                <div class="nav-section">
+                    <p class="nav-label">ホーム</p>
+                    <a href="#" class="nav-item active">🏠 家族のみんな</a>
+                    <a href="#" id="view-history-btn" class="nav-item">🕰️ これまでの履歴</a>
+                </div>
+                <div class="nav-section">
+                    <p class="nav-label">ランキング</p>
+                    <div id="ranking-list"></div>
+                </div>
+            </nav>
+            <div class="sidebar-footer">
+                <button id="manage-rewards-btn" class="btn-ghost">🎨 ご褒美の設定</button>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header class="content-header">
+                <div class="header-info">
+                    <h2>タスクと現在のポイント</h2>
+                    <p id="current-date"></p>
+                </div>
+                <button id="btn-save" class="btn-primary">決定！保存する</button>
+            </header>
+            <div class="dashboard-grid">
+                <section class="goals-row" id="goals-container"></section>
+                <section class="matrix-card">
+                    <div class="card-header"><h3>⭐ デイリータスク</h3></div>
+                    <table>
+                        <thead><tr>
+                            <th style="text-align:left;">内容</th>
+                            <th>ママ</th><th>パパ</th><th>けん</th><th>つき</th>
+                        </tr></thead>
+                        <tbody id="daily-body"></tbody>
+                    </table>
+                </section>
+                <section class="matrix-card">
+                    <div class="card-header"><h3>📅 定期タスク</h3></div>
+                    <table>
+                        <thead><tr>
+                            <th style="text-align:left;">内容</th>
+                            <th>ママ</th><th>パパ</th><th>けん</th><th>つき</th>
+                        </tr></thead>
+                        <tbody id="regular-body"></tbody>
+                    </table>
+                </section>
+            </div>
+        </main>
+
+        <!-- Modals -->
+        <div id="report-modal" class="modal">
+            <div class="modal-content">
+                <span class="close-modal">&times;</span>
+                <h3 style="margin: 10px 0 20px;">🤖 AIレポート</h3>
+                <div class="modal-scroll" id="report-container"></div>
+                <button class="btn-primary" style="margin-top:20px;" onclick="closeModal('report-modal')">OK！また頑張る</button>
+            </div>
+        </div>
+
+        <div id="history-modal" class="modal">
+            <div class="modal-content">
+                <span class="close-modal">&times;</span>
+                <h3 style="margin: 10px 0 20px;">🕰️ がんばった履歴</h3>
+                <div class="modal-scroll" id="history-list"></div>
+            </div>
+        </div>
+
+        <div id="reward-modal" class="modal">
+            <div class="modal-content">
+                <span class="close-modal">&times;</span>
+                <h3 style="margin: 10px 0 15px;">目標設定</h3>
+                <select id="reward-user-select" style="width:100%; padding:10px; border-radius:10px; margin-bottom: 15px;">
+                    <option value="mama">ママ</option><option value="papa">パパ</option>
+                    <option value="ken">ken</option><option value="tsuki">tsuki</option>
+                </select>
+                <div class="modal-scroll" id="reward-list"></div>
+                <hr style="margin:20px 0; border:1px dashed #FFEDD5;">
+                <h4>新しい目標を追加</h4>
+                <div style="display:flex; flex-direction:column; gap:10px; margin-top:10px;">
+                    <input type="text" id="reward-name-input" placeholder="ご褒美の名前" style="padding:10px; border-radius:10px; border:2px solid #FFEDD5;">
+                    <input type="number" id="reward-points-input" placeholder="必要ポイント" style="padding:10px; border-radius:10px; border:2px solid #FFEDD5;">
+                    <button id="add-reward-btn" class="btn-primary">追加する</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const SUPABASE_URL = 'https://YOUR_PROJECT_URL.supabase.co';
+        const SUPABASE_ANON_KEY = 'YOUR_ANON_KEY';
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        const USERS = [{ id: 'mama', name: 'ママ' }, { id: 'papa', name: 'パパ' }, { id: 'ken', name: 'けんちゃん' }, { id: 'tsuki', name: 'つきちゃん' }];
+        const DAILY_TASKS = [
+            {id:'d1',name:'掃除機',points:2},{id:'d2',name:'おもちゃ片付け',points:5},{id:'d3',name:'ゴミ出し',points:2},{id:'d4',name:'花の水やり',points:4},{id:'d5',name:'宿題',points:6},
+            {id:'d6',name:'ピアノ練習',points:7},{id:'d7',name:'お風呂掃除',points:2},{id:'d8',name:'食器片付け',points:3},{id:'d9',name:'洗濯物たたみ',points:3},{id:'d10',name:'歯磨き',points:4}
+        ];
+        const REGULAR_TASKS = [
+            {id:'r1',name:'トイレ掃除',points:4},{id:'r2',name:'花の肥料やり',points:2},{id:'r3',name:'お風呂のカビ取り',points:6},{id:'r4',name:'冷蔵庫整理',points:4},{id:'r5',name:'布団干し',points:4},
+            {id:'r6',name:'コンロ掃除',points:4},{id:'r7',name:'玄関掃除',points:4},{id:'r8',name:'草むしり',points:8},{id:'r9',name:'ケルヒャー',points:10},{id:'r10',name:'窓拭き',points:6}
+        ];
+
+        // --- AI COMMENT ENGINE (100+ patterns logic) ---
+        const AI_WORDS = {
+            praise: ["さすがですね！", "素晴らしい活躍です！", "天才かもしれません...", "家族の誇りです！", "輝いていますね！", "完璧な仕事ぶりです。", "尊敬しちゃいます！", "勢いが止まりませんね！", "今日も絶好調です！", "みんなが見習うべき姿です。"],
+            action: ["テキパキこなす姿、見てましたよ。", "丁寧な仕事に感動しました。", "その調子で突き進みましょう！", "努力は裏切りませんね。", "一歩ずつ確実に進んでいます。", "集中力が凄まじいです！", "周りへの思いやりが伝わります。", "良いリズムができていますね。"],
+            encouragement: ["次も期待しています！", "あなたの背中が頼もしいです。", "さらなる高みへ挑戦しましょう！", "明日もこの調子でいきましょうね。", "無理せず、自分のペースで！", "小さな積み重ねが大きな力になります。", "楽しんでやることが一番の近道です。"]
+        };
+        const generateAIComment = (uName, pts) => {
+            const getRnd = (arr) => arr[Math.floor(Math.random() * arr.length)];
+            let msg = pts >= 10 ? "【圧倒的貢献！】" : pts >= 5 ? "【ナイスファイト！】" : "【着実な一歩！】";
+            msg += `${getRnd(AI_WORDS.praise)} ${getRnd(AI_WORDS.action)} ${getRnd(AI_WORDS.encouragement)}`;
+            return msg;
+        };
+
+        let usersData = [];
+        let rewardsData = [];
+        let regularTasksData = {};
+
+        const dbClient = {
+            async fetchData() {
+                const { data: users } = await supabaseClient.from('family_users').select('*');
+                const { data: rewards } = await supabaseClient.from('family_rewards').select('*');
+                const { data: regular } = await supabaseClient.from('regular_tasks').select('*');
+                usersData = users || [];
+                rewardsData = rewards || [];
+                regularTasksData = (regular || []).reduce((acc, curr) => ({ ...acc, [curr.id]: curr.last_done }), {});
+            },
+            async addPoints(uId, pts) {
+                const user = usersData.find(u => u.id === uId);
+                if (user) await supabaseClient.from('family_users').update({ total_points: user.total_points + pts }).eq('id', uId);
+            },
+            async deductPoints(uId, pts) {
+                const user = usersData.find(u => u.id === uId);
+                if (user) await supabaseClient.from('family_users').update({ total_points: Math.max(0, user.total_points - pts) }).eq('id', uId);
+            },
+            async addReward(uId, name, pts) { await supabaseClient.from('family_rewards').insert([{ user_id: uId, name, points: pts }]); },
+            async deleteReward(id) { await supabaseClient.from('family_rewards').delete().eq('id', id); },
+            async updateRegularDate(tId) { await supabaseClient.from('regular_tasks').upsert({ id: tId, last_done: new Date().toLocaleDateString() }); },
+            async addHistory(uId, tId, name, pts) { await supabaseClient.from('task_history').insert([{ user_id: uId, task_id: tId, task_name: name, points: pts }]); },
+            async fetchHistory() { const { data } = await supabaseClient.from('task_history').select('*').order('created_at', { ascending: false }).limit(50); return data || []; }
+        };
+
+        const isSupabaseConfigured = () => SUPABASE_URL && !SUPABASE_URL.includes('YOUR_PROJECT_URL');
+
+        async function init() {
+            if (isSupabaseConfigured()) {
+                try { await dbClient.fetchData(); } catch (e) {
+                    console.warn("Connect Fail", e);
+                    usersData = USERS.map(u => ({ ...u, total_points: 0 }));
+                }
+            } else {
+                usersData = USERS.map(u => ({ ...u, total_points: 0 }));
+            }
+            render();
+            if (isSupabaseConfigured()) setupRealtime();
+            setupEvents();
+        }
+
+        function setupRealtime() { supabaseClient.channel('any').on('postgres_changes', { event: '*', schema: 'public' }, async () => { await dbClient.fetchData(); render(); }).subscribe(); }
+
+        function render() {
+            const now = new Date();
+            document.getElementById('current-date').textContent = `${now.getFullYear()}年${now.getMonth() + 1}月${now.getDate()}日`;
+
+            document.getElementById('goals-container').innerHTML = USERS.map(u => {
+                const liveUser = usersData.find(d => d.id === u.id) || { total_points: 0 };
+                const myRewards = rewardsData.filter(r => r.user_id === u.id);
+                const rewardsHtml = myRewards.length > 0 ? myRewards.map(r => {
+                    const progress = Math.min(100, (liveUser.total_points / r.points) * 100);
+                    const canAfford = liveUser.total_points >= r.points;
+                    return `
+                        <div class="reward-item">
+                            <div style="font-size:0.8rem; font-weight:900; display:flex; justify-content:space-between; margin-bottom:5px;">
+                                <span>🎁 ${r.name} (${r.points}pt)</span>
+                                ${canAfford ? `<button onclick="getReward('${r.id}','${u.id}')" style="background:var(--accent-green); color:white; border:none; padding:4px 10px; border-radius:10px; font-size:0.7rem; font-weight:900; cursor:pointer;">GET!</button>` : ''}
+                            </div>
+                            <div class="progress-bar"><div class="progress-inner" style="width:${progress}%"></div></div>
+                        </div>`;
+                }).join('') : '<p style="font-size:0.7rem; color:#CCC; text-align:center; padding:10px;">目標なし</p>';
+                return `<div class="goal-card"><div class="user-info"><strong>${u.name}</strong><span class="points">${liveUser.total_points || 0}pt</span></div><div class="rewards-list">${rewardsHtml}</div></div>`;
+            }).join('');
+
+            const sorted = [...usersData].sort((a,b) => b.total_points - a.total_points);
+            document.getElementById('ranking-list').innerHTML = sorted.map((u, i) => `
+                <div class="ranking-item"><span class="rank-num">${i + 1}</span><span>${USERS.find(x=>x.id===u.id)?.name || u.name}</span><span style="margin-left:auto;">${u.total_points}pt</span></div>
+            `).join('');
+
+            document.getElementById('daily-body').innerHTML = DAILY_TASKS.map(t => `
+                <tr><td class="task-info"><div class="task-name">${t.name}</div><div class="task-meta">+${t.points}pt</div></td>
+                ${USERS.map(u => `<td><div class="cell-check" data-user="${u.id}" data-task="${t.id}" data-type="daily"></div></td>`).join('')}</tr>`).join('');
+
+            document.getElementById('regular-body').innerHTML = REGULAR_TASKS.map(t => `
+                <tr><td class="task-info"><div class="task-name">${t.name}</div><div class="task-meta">+${t.points}pt</div><div class="task-date">前回: ${regularTasksData[t.id] || '未'}</div></td>
+                ${USERS.map(u => `<td><div class="cell-check" data-user="${u.id}" data-task="${t.id}" data-type="regular"></div></td>`).join('')}</tr>`).join('');
+
+            document.querySelectorAll('.cell-check').forEach(c => c.onclick = () => c.classList.toggle('checked'));
+        }
+
+        async function getReward(id, uId) {
+            const r = rewardsData.find(x => String(x.id) === String(id));
+            if (r) {
+                await dbClient.deductPoints(uId, r.points);
+                await dbClient.addHistory(uId, 'reward', `【獲得】${r.name}`, -r.points);
+                alert('おめでとうございます！✨');
+                await dbClient.fetchData();
+                render();
+            }
+        }
+
+        function setupEvents() {
+            document.getElementById('btn-save').onclick = async () => {
+                const checked = document.querySelectorAll('.cell-check.checked');
+                if (checked.length === 0) return;
+                
+                const stats = {}; // Today's points
+                for (const cell of checked) {
+                    const uId = cell.dataset.user;
+                    const task = [...DAILY_TASKS, ...REGULAR_TASKS].find(x => x.id === cell.dataset.task);
+                    stats[uId] = (stats[uId] || 0) + task.points;
+                    await dbClient.addPoints(uId, task.points);
+                    await dbClient.addHistory(uId, task.id, task.name, task.points);
+                    if (cell.dataset.type === 'regular') await dbClient.updateRegularDate(cell.dataset.task);
+                }
+
+                // Show AI Repot
+                let reportHtml = '';
+                for (const uId in stats) {
+                    const user = USERS.find(u => u.id === uId);
+                    reportHtml += `
+                        <div class="report-card">
+                            <div class="report-user"><span>👤 ${user.name}</span><span>+${stats[uId]}pt</span></div>
+                            <div class="report-comment">${generateAIComment(user.name, stats[uId])}</div>
+                        </div>`;
+                }
+                document.getElementById('report-container').innerHTML = reportHtml || '<p>今日はまだ誰もタスクを完了していません。</p>';
+                document.getElementById('report-modal').style.display = 'flex';
+
+                await dbClient.fetchData();
+                render();
+            };
+
+            document.getElementById('view-history-btn').onclick = async () => {
+                const history = await dbClient.fetchHistory();
+                document.getElementById('history-list').innerHTML = history.map(h => {
+                    const date = new Date(h.created_at);
+                    const ptsColor = h.points > 0 ? 'var(--accent-blue)' : 'var(--accent-pink)';
+                    return `<div class="history-item"><div><div class="task">${h.task_name} <small>by ${USERS.find(u=>u.id===h.user_id)?.name}</small></div><small>${date.getMonth()+1}/${date.getDate()} ${date.getHours()}:${String(date.getMinutes()).padStart(2,'0')}</small></div><div class="pts" style="color:${ptsColor}">${h.points>0?'+':''}${h.points}pt</div></div>`;
+                }).join('') || '<p>履歴なし</p>';
+                document.getElementById('history-modal').style.display = 'flex';
+            };
+
+            document.getElementById('manage-rewards-btn').onclick = () => { renderRewardList(); document.getElementById('reward-modal').style.display = 'flex'; };
+            document.querySelectorAll('.close-modal').forEach(b => b.onclick = () => b.closest('.modal').style.display = 'none');
+            document.getElementById('reward-user-select').onchange = renderRewardList;
+            document.getElementById('add-reward-btn').onclick = async () => {
+                const uId = document.getElementById('reward-user-select').value;
+                const n = document.getElementById('reward-name-input').value;
+                const p = Number(document.getElementById('reward-points-input').value);
+                if (n && p) { await dbClient.addReward(uId, n, p); await dbClient.fetchData(); renderRewardList(); render(); }
+            };
+        }
+
+        function renderRewardList() {
+            const uId = document.getElementById('reward-user-select').value;
+            const myRewards = rewardsData.filter(r => r.user_id === uId);
+            document.getElementById('reward-list').innerHTML = myRewards.map(r => `
+                <div style="display:flex; justify-content:space-between; padding:10px; border-bottom:1px solid #eee;">
+                    <span>${r.name} (${r.points}pt)</span>
+                    <button onclick="deleteReward('${r.id}')" style="color:var(--accent-blue); background:none; border:none; cursor:pointer;">削除</button>
+                </div>`).join('') || '<p>目標なし</p>';
+        }
+        window.deleteReward = async (id) => { await dbClient.deleteReward(id); await dbClient.fetchData(); renderRewardList(); render(); };
+        window.closeModal = (id) => document.getElementById(id).style.display = 'none';
+
+        init();
+    </script>
+</body>
+</html>
