@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>famtsk | Family Task Management</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;700;900&display=swap"
+        rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root {
@@ -24,7 +26,12 @@
             --sidebar-width: 240px;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-font-smoothing: antialiased; }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-font-smoothing: antialiased;
+        }
 
         body {
             font-family: 'Zen Maru Gothic', sans-serif;
@@ -35,7 +42,10 @@
             background-size: 20px 20px;
         }
 
-        #app { display: flex; height: 100vh; }
+        #app {
+            display: flex;
+            height: 100vh;
+        }
 
         .sidebar {
             width: var(--sidebar-width);
@@ -47,52 +57,145 @@
             flex-direction: column;
         }
 
-        .sidebar-header { display: flex; align-items: center; gap: 10px; margin-bottom: 40px; }
-        .sidebar-header h1 { font-size: 1.5rem; font-weight: 900; color: var(--accent-pink); }
+        .sidebar-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 40px;
+        }
 
-        .nav-section { margin-bottom: 30px; }
-        .nav-label { font-size: 0.75rem; font-weight: 900; color: var(--text-secondary); margin-bottom: 12px; letter-spacing: 0.1em; }
+        .sidebar-header h1 {
+            font-size: 1.5rem;
+            font-weight: 900;
+            color: var(--accent-pink);
+        }
+
+        .nav-section {
+            margin-bottom: 30px;
+        }
+
+        .nav-label {
+            font-size: 0.75rem;
+            font-weight: 900;
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+            letter-spacing: 0.1em;
+        }
 
         .nav-item {
-            display: flex; align-items: center; gap: 12px; padding: 12px 16px;
-            text-decoration: none; color: var(--text-primary); border-radius: 15px;
-            font-size: 0.95rem; font-weight: 700; transition: all 0.3s; margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            text-decoration: none;
+            color: var(--text-primary);
+            border-radius: 15px;
+            font-size: 0.95rem;
+            font-weight: 700;
+            transition: all 0.3s;
+            margin-bottom: 5px;
         }
-        .nav-item:hover { background: rgba(255,255,255,0.5); }
-        .nav-item.active { background: var(--accent-pink); color: white; box-shadow: 0 4px 12px rgba(255, 133, 161, 0.3); }
 
-        .main-content { flex: 1; overflow-y: auto; padding: 40px; }
-        .content-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px; }
-        
-        .date-navigator { display: flex; align-items: center; gap: 20px; }
-        .date-btn { background: white; border: 2px solid var(--border-color); padding: 8px 15px; border-radius: 12px; cursor: pointer; font-weight: 900; color: var(--text-primary); }
-        .current-date-display { font-size: 1.8rem; font-weight: 900; color: var(--text-primary); }
+        .nav-item:hover {
+            background: rgba(255, 255, 255, 0.5);
+        }
 
-        .dashboard-grid { display: grid; gap: 32px; }
+        .nav-item.active {
+            background: var(--accent-pink);
+            color: white;
+            box-shadow: 0 4px 12px rgba(255, 133, 161, 0.3);
+        }
+
+        /* Ranking styling */
+        .ranking-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            font-size: 0.95rem;
+            font-weight: 900;
+            background: white;
+            border-radius: 18px;
+            margin-bottom: 10px;
+            box-shadow: 0 4px 0 var(--border-color);
+            transition: transform 0.2s;
+            border: 2px solid transparent;
+        }
+
+        .ranking-item.rank-1 { border-color: #FFD700; background: #FFFDF0; }
+        .ranking-item.rank-2 { border-color: #C0C0C0; background: #F8F8F8; }
+        .ranking-item.rank-3 { border-color: #CD7F32; background: #FFF5F0; }
+
+        .rank-badge { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; flex-shrink: 0; }
+        .rank-pts { margin-left: auto; background: var(--accent-blue); color: white; padding: 4px 10px; border-radius: 12px; font-size: 0.8rem; }
+
+        .main-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 40px;
+        }
+
+        .content-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 32px;
+        }
+
+        .date-navigator {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .current-date-display {
+            font-size: 1.8rem;
+            font-weight: 900;
+            color: var(--text-primary);
+        }
+
+        .date-btn {
+            background: white;
+            border: 2px solid var(--border-color);
+            padding: 8px 15px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 900;
+            color: var(--text-primary);
+        }
+
+        .dashboard-grid {
+            display: grid;
+            gap: 32px;
+        }
 
         .matrix-card {
-            background: var(--card-bg); border-radius: 30px; padding: 30px;
-            box-shadow: 0 10px 0 #FFEDD5; border: 2px solid #FFEDD5;
+            background: var(--card-bg);
+            border-radius: 30px;
+            padding: 30px;
+            box-shadow: 0 10px 0 #FFEDD5;
+            border: 2px solid #FFEDD5;
         }
-        .card-header { margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
-        .card-header h3 { font-size: 1.3rem; font-weight: 900; color: var(--accent-blue); }
 
-        table { width: 100%; border-collapse: collapse; }
+        .card-header {
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
         th, td { padding: 15px; text-align: center; border-bottom: 2px solid #FFF9F2; }
         th { font-size: 0.85rem; color: var(--text-secondary); font-weight: 800; }
-
-        .task-info { text-align: left; }
-        .task-name { font-weight: 900; }
-        .task-meta { font-size: 0.7rem; color: var(--accent-blue); font-weight: 800; }
+        table { width: 100%; border-collapse: collapse; }
 
         .cell-check {
             cursor: pointer; width: 32px; height: 32px; border-radius: 10px;
             border: 3px solid #EEE; background: #F8F8F8;
             display: inline-flex; align-items: center; justify-content: center;
+            transition: transform 0.1s;
         }
         .cell-check.checked { background: var(--accent-green); border-color: var(--accent-green); transform: scale(1.15); }
         .cell-check.checked::after { content: '✨'; font-size: 16px; }
-        .cell-check.loading { opacity: 0.4; pointer-events: none; }
 
         .goals-row { display: flex; gap: 20px; overflow-x: auto; padding-bottom: 15px; }
         .goal-card { background: var(--card-bg); padding: 24px; border-radius: 25px; min-width: 220px; box-shadow: 0 8px 0 #FFEDD5; border: 2px solid #FFEDD5; }
@@ -100,35 +203,40 @@
         .user-info strong { font-size: 1.2rem; color: var(--accent-pink); }
         .user-info .points { font-size: 1.4rem; font-weight: 900; color: var(--accent-blue); }
 
-        .reward-item { background: #FDFDFD; padding: 12px; border-radius: 15px; border: 1px dashed #FFEDD5; margin-top: 8px; }
-        .progress-bar { height: 10px; background: #F0F0F0; border-radius: 5px; overflow: hidden; margin: 8px 0; }
+        .reward-item { background: #FDFDFD; padding: 12px; border-radius: 15px; border: 1px dashed #FFEDD5; margin-top: 8px; position: relative; }
+        .btn-get { 
+            position: absolute; right: 10px; top: 10px; background: var(--accent-yellow); 
+            border: none; padding: 5px 12px; border-radius: 10px; font-weight: 900; 
+            color: var(--text-primary); cursor: pointer; font-size: 0.75rem;
+            animation: bounce 1s infinite; box-shadow: 0 3px 0 #E6B800;
+        }
+        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
+        .progress-bar { height: 10px; background: #F0F0F0; border-radius: 5px; overflow: hidden; margin: 8px 0; width: 70%; }
         .progress-inner { height: 100%; background: linear-gradient(90deg, var(--accent-pink), #FFB6C1); width: 0%; transition: width 0.5s; }
 
         .btn-primary {
-            background: linear-gradient(135deg, var(--accent-blue), #76B9FF); color: white; border: none;
-            padding: 12px 28px; border-radius: 20px; font-weight: 900; cursor: pointer; box-shadow: 0 4px 0 #3E8BFF;
+            background: linear-gradient(135deg, var(--accent-blue), #76B9FF);
+            color: white; border: none; padding: 12px 28px; border-radius: 20px;
+            font-weight: 900; cursor: pointer; box-shadow: 0 4px 0 #3E8BFF;
         }
+        .btn-primary.loading { filter: grayscale(1); cursor: wait; }
+
         .btn-ghost { background: white; border: 2px solid var(--border-color); padding: 10px; border-radius: 15px; font-weight: 800; cursor: pointer; width: 100%; margin-top: 10px; }
 
         .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.3); backdrop-filter: blur(5px); z-index: 1000; align-items: center; justify-content: center; }
         .modal-content { background: white; padding: 20px 40px 40px; border-radius: 35px; border: 5px solid #FFEDD5; width: 90%; max-width: 600px; position: relative; max-height: 85vh; display: flex; flex-direction: column; }
         .modal-scroll { overflow-y: auto; flex: 1; padding: 10px 5px; }
         .close-modal { position: absolute; top: 10px; right: 20px; cursor: pointer; font-size: 2rem; font-weight: bold; }
-
         .report-card { background: #FDF9F5; border-radius: 20px; padding: 20px; margin-bottom: 15px; border-left: 6px solid var(--accent-pink); }
-        .report-user { font-weight: 900; color: var(--accent-pink); margin-bottom: 8px; display: flex; justify-content: space-between; }
     </style>
 </head>
+
 <body>
     <div id="app">
         <aside class="sidebar">
             <div class="sidebar-header"><span style="font-size:2rem;">🌈</span><h1>famtsk</h1></div>
             <nav class="sidebar-nav">
-                <div class="nav-section">
-                    <p class="nav-label">ホーム</p>
-                    <a href="#" class="nav-item active">🏠 家族のみんな</a>
-                    <a href="#" id="view-history-btn" class="nav-item">🕰️ 履歴（これまでの分）</a>
-                </div>
+                <div class="nav-section"><p class="nav-label">ホーム</p><a href="#" class="nav-item active">🏠 みんな</a><a href="#" id="view-history-btn" class="nav-item">🕰️ 履歴</a></div>
                 <div class="nav-section"><p class="nav-label">ランキング</p><div id="ranking-list"></div></div>
             </nav>
             <div class="sidebar-footer"><button id="manage-rewards-btn" class="btn-ghost">🎨 ご褒美の設定</button></div>
@@ -137,39 +245,27 @@
         <main class="main-content">
             <header class="content-header">
                 <div class="date-navigator">
-                    <button class="date-btn" id="prev-day">＜ 昨日</button>
-                    <div class="current-date-display" id="date-display">読込中...</div>
+                    <button class="date-btn" id="prev-day">＜ 前の日</button>
+                    <div class="current-date-display" id="date-display">...</div>
                     <button class="date-btn" id="today-btn">今日</button>
-                    <button class="date-btn" id="next-day">明日 ＞</button>
+                    <button class="date-btn" id="next-day">次の日 ＞</button>
                 </div>
                 <button id="btn-save" class="btn-primary">決定！レポートを見る</button>
             </header>
             <div class="dashboard-grid">
                 <section class="goals-row" id="goals-container"></section>
-                <div class="matrix-card">
-                    <div class="card-header"><h3>⭐ デイリータスク</h3></div>
-                    <table>
-                        <thead><tr><th style="text-align:left;">内容</th><th>ママ</th><th>パパ</th><th>けん</th><th>つき</th></tr></thead>
-                        <tbody id="daily-body"></tbody>
-                    </table>
-                </div>
-                <div class="matrix-card">
-                    <div class="card-header"><h3>📅 定期タスク</h3></div>
-                    <table>
-                        <thead><tr><th style="text-align:left;">内容</th><th>ママ</th><th>パパ</th><th>けん</th><th>つき</th></tr></thead>
-                        <tbody id="regular-body"></tbody>
-                    </table>
-                </div>
+                <div class="matrix-card"><div class="card-header"><h3>⭐ デイリータスク</h3></div><table><thead><tr><th style="text-align:left;">内容</th><th>ママ</th><th>パパ</th><th>けん</th><th>つき</th></tr></thead><tbody id="daily-body"></tbody></table></div>
+                <div class="matrix-card"><div class="card-header"><h3>📅 定期タスク</h3></div><table><thead><tr><th style="text-align:left;">内容</th><th>ママ</th><th>パパ</th><th>けん</th><th>つき</th></tr></thead><tbody id="regular-body"></tbody></table></div>
             </div>
         </main>
 
+        <!-- Modals -->
         <div id="report-modal" class="modal"><div class="modal-content"><span class="close-modal" onclick="closeModal('report-modal')">&times;</span><h3 style="margin: 10px 0;">🤖 AIレポート</h3><div id="report-container" class="modal-scroll"></div><button class="btn-primary" style="margin-top:20px;" onclick="closeModal('report-modal')">OK！</button></div></div>
         <div id="history-modal" class="modal"><div class="modal-content"><span class="close-modal" onclick="closeModal('history-modal')">&times;</span><h3>🕰️ 履歴</h3><div class="modal-scroll" id="history-list"></div></div></div>
-        <div id="reward-modal" class="modal"><div class="modal-content"><span class="close-modal" onclick="closeModal('reward-modal')">&times;</span><h3>目標設定</h3><select id="reward-user-select" style="width:100%; padding:10px; border-radius:10px; margin-top:15px;"></select><div class="modal-scroll" id="reward-list"></div><hr style="margin:20px 0; border:1px dashed #eee;"><h4>追加</h4><div style="display:flex; flex-direction:column; gap:10px; margin-top:10px;"><input type="text" id="reward-name-input" placeholder="名前" style="padding:10px; border-radius:10px; border:2px solid #eee;"><input type="number" id="reward-points-input" placeholder="ポイント" style="padding:10px; border-radius:10px; border:2px solid #eee;"><button id="add-reward-btn" class="btn-primary">追加</button></div></div></div>
+        <div id="reward-modal" class="modal"><div class="modal-content"><span class="close-modal" onclick="closeModal('reward-modal')">&times;</span><h3>目標設定</h3><select id="reward-user-select" style="width:100%; padding:10px; margin-top:10px; border-radius:10px; border:2px solid #FFEDD5; font-family:inherit;font-weight:900;"></select><div id="reward-list" class="modal-scroll"></div><hr style="margin:20px 0; border:1px dashed #eee;"><h4>追加</h4><div style="display:flex; flex-direction:column; gap:10px; margin-top:10px;"><input type="text" id="reward-name-input" placeholder="なまえ" style="padding:10px; border-radius:10px; border:2px solid #eee;"><input type="number" id="reward-points-input" placeholder="ポイント" style="padding:10px; border-radius:10px; border:2px solid #eee;"><button id="add-reward-btn" class="btn-primary">追加</button></div></div></div>
     </div>
 
     <script>
-        // --- 設定 ---
         const SUPABASE_URL = 'https://klrmecsympcysbyublqw.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtscm1lY3N5bXBjeXNieXVibHF3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY2NjI4NDYsImV4cCI6MjA5MjIzODg0Nn0.FSOy4e1aSl8IOFG8pWNbXlmEn8ZlZRa2YQiYC4ptpAo';
         let supabaseClient = null;
@@ -178,150 +274,158 @@
         const USERS = [{id:'mama',name:'ママ'},{id:'papa',name:'パパ'},{id:'ken',name:'けんちゃん'},{id:'tsuki',name:'つきちゃん'}];
         const DAILY_TASKS = [{id:'d1',name:'掃除機',points:2},{id:'d2',name:'おもちゃ片付け',points:5},{id:'d3',name:'ゴミ出し',points:2},{id:'d4',name:'花の水やり',points:4},{id:'d5',name:'宿題',points:6},{id:'d6',name:'ピアノ練習',points:7},{id:'d7',name:'お風呂掃除',points:2},{id:'d8',name:'食器片付け',points:3},{id:'d9',name:'洗濯物たたみ',points:3},{id:'d10',name:'歯磨き',points:4}];
         const REGULAR_TASKS = [{id:'r1',name:'トイレ掃除',points:4},{id:'r2',name:'花の肥料やり',points:2},{id:'r3',name:'お風呂のカビ取り',points:6},{id:'r4',name:'冷蔵庫整理',points:4},{id:'r5',name:'布団干し',points:4},{id:'r6',name:'コンロ掃除',points:4},{id:'r7',name:'玄関掃除',points:4},{id:'r8',name:'草むしり',points:8},{id:'r9',name:'ケルヒャー',points:10},{id:'r10',name:'窓拭き',points:6}];
-        const AI_PHRASES = ["さすがですね！", "素晴らしい活躍です！", "天才かもしれません...", "家族の誇りです！", "輝いていますね！", "完璧な仕事ぶりです。", "努力は裏切りませんね。", "テキパキこなす姿に感動しました。"];
+        const AI_PHRASES = ["さすがですね！", "素晴らしい活躍です！", "天才かもしれません...", "家族の誇りです！", "輝いていますね！", "今日も最高！"];
 
         let activeDate = new Date();
         let localState = { users: USERS.map(u=>({...u, total_points:0})), rewards: [], tasks_done: [] };
-        
         const isDB = () => supabaseClient !== null && SUPABASE_ANON_KEY && !SUPABASE_ANON_KEY.includes('YOUR_ANON_KEY');
+
+        const loadLocal = () => { const raw = localStorage.getItem('famtsk_vfinal_2'); if(raw) localState = JSON.parse(raw); };
+        const saveLocal = () => localStorage.setItem('famtsk_vfinal_2', JSON.stringify(localState));
 
         const dbClient = {
             async fetchAll() {
-                if (!isDB()) { this.loadLocal(); return; }
-                try {
-                    const { data:u } = await supabaseClient.from('family_users').select('*');
-                    const { data:r } = await supabaseClient.from('family_rewards').select('*');
-                    if (u) { localState.users = u; }
-                    if (r) { localState.rewards = r; }
-                } catch(e){ this.loadLocal(); }
-            },
-            async fetchTasksForDate(date) {
-                const ds = new Date(date); ds.setHours(0,0,0,0);
-                const de = new Date(date); de.setHours(23,59,59,999);
-                if (isDB()) {
-                    try {
-                        const { data } = await supabaseClient.from('task_history').select('*').gte('created_at', ds.toISOString()).lte('created_at', de.toISOString());
-                        return data || [];
-                    } catch(e){}
-                }
-                const dStr = date.toLocaleDateString();
-                return localState.tasks_done.filter(t => new Date(t.created_at).toLocaleDateString() === dStr);
-            },
-            async toggle(uId, tId, tName, pts, date) {
-                const todayTasks = await this.fetchTasksForDate(date);
-                const existing = todayTasks.find(d => d.user_id === uId && d.task_id === tId);
-                const user = localState.users.find(u => u.id === uId);
-                
-                if (existing) {
-                    if (isDB()) await supabaseClient.from('task_history').delete().eq('id', existing.id);
-                    localState.tasks_done = localState.tasks_done.filter(t => String(t.id) !== String(existing.id));
-                    if (user) {
-                        user.total_points -= pts;
-                        if (isDB()) await supabaseClient.from('family_users').update({ total_points: user.total_points }).eq('id', uId);
-                    }
-                } else {
-                    const newEntry = { id:Date.now(), user_id:uId, task_id:tId, task_name:tName, points:pts, created_at:new Date(date).toISOString() };
-                    if (isDB()) await supabaseClient.from('task_history').insert([newEntry]);
-                    localState.tasks_done.push(newEntry);
-                    if (user) {
-                        user.total_points += pts;
-                        if (isDB()) await supabaseClient.from('family_users').update({ total_points: user.total_points }).eq('id', uId);
-                    }
-                }
-                this.saveLocal();
-            },
-            loadLocal() { const raw = localStorage.getItem('famtsk_sync_v1'); if (raw) { const d = JSON.parse(raw); if (d.users) localState.users = d.users; if (d.tasks_done) localState.tasks_done = d.tasks_done; if (d.rewards) localState.rewards = d.rewards; } },
-            saveLocal() { localStorage.setItem('famtsk_sync_v1', JSON.stringify(localState)); }
+                if(!isDB()) return;
+                const {data:u} = await supabaseClient.from('family_users').select('*');
+                const {data:r} = await supabaseClient.from('family_rewards').select('*');
+                const {data:h} = await supabaseClient.from('task_history').select('*');
+                if(u) localState.users = u;
+                if(r) localState.rewards = r;
+                if(h) localState.tasks_done = h;
+            }
         };
 
-        const render = async () => {
-            const dateStr = `${activeDate.getFullYear()}年${activeDate.getMonth()+1}月${activeDate.getDate()}日`;
-            document.getElementById('date-display').textContent = dateStr;
-            const doneToday = await dbClient.fetchTasksForDate(activeDate);
+        const render = () => {
+            document.getElementById('date-display').textContent = `${activeDate.getFullYear()}年${activeDate.getMonth()+1}月${activeDate.getDate()}日`;
+            const dStr = activeDate.toLocaleDateString();
+            const doneToday = localState.tasks_done.filter(t => new Date(t.created_at).toLocaleDateString() === dStr);
+
+            // Tasks
+            const drawRows = (tasks) => tasks.map(t => `<tr><td style="text-align:left;font-weight:900;">${t.name}<div style="color:var(--accent-blue);font-size:0.7rem;">+${t.points}pt</div></td>${USERS.map(u => {
+                const checked = doneToday.some(d => d.user_id === u.id && d.task_id === t.id);
+                return `<td><div class="cell-check ${checked?'checked':''}" onclick="toggleUI('${u.id}','${t.id}','${t.name}',${t.points})"></div></td>`;
+            }).join('')}</tr>`).join('');
+            document.getElementById('daily-body').innerHTML = drawRows(DAILY_TASKS);
+            document.getElementById('regular-body').innerHTML = drawRows(REGULAR_TASKS);
+
+            // Ranking
+            const sorted = [...localState.users].sort((a,b)=>b.total_points - a.total_points);
+            document.getElementById('ranking-list').innerHTML = sorted.map((u,i) => {
+                const r = i+1; const m = r==1?'👑':r==2?'🥈':r==3?'🥉':'✨';
+                return `<div class="ranking-item rank-${r}"><div class="rank-badge">${m}</div><span>${u.name}</span><span class="rank-pts">${u.total_points}pt</span></div>`;
+            }).join('');
 
             // Goals
             document.getElementById('goals-container').innerHTML = localState.users.map(u => {
-                const myRewards = localState.rewards.filter(r => (r.user_id === u.id || r.userId === u.id));
-                const rewardsHtml = myRewards.map(r => {
-                    const prog = Math.min(100, (u.total_points / r.points) * 100);
-                    return `<div class="reward-item"><div style="font-size:0.8rem; font-weight:800;">🎁 ${r.name}</div><div class="progress-bar"><div class="progress-inner" style="width:${prog}%"></div></div></div>`;
-                }).join('') || '<p style="font-size:0.7rem; color:#ccc;">目標なし</p>';
-                return `<div class="goal-card"><div class="user-info"><strong>${u.name}</strong><span class="points">${u.total_points}pt</span></div>${rewardsHtml}</div>`;
+                const myR = localState.rewards.filter(r => r.user_id === u.id);
+                const rHtml = myR.map(r => {
+                    const p = Math.min(100, (u.total_points/r.points)*100);
+                    const canGet = u.total_points >= r.points;
+                    return `
+                        <div class="reward-item">
+                            <div style="font-size:0.8rem; font-weight:800;">🎁 ${r.name}</div>
+                            <div class="progress-bar"><div class="progress-inner" style="width:${p}%"></div></div>
+                            ${canGet ? `<button class="btn-get" onclick="claimReward('${u.id}', '${r.id}', ${r.points}, '${r.name}')">GET!</button>` : ''}
+                        </div>`;
+                }).join('');
+                return `<div class="goal-card"><div class="user-info"><strong>${u.name}</strong><span class="points">${u.total_points}pt</span></div>${rHtml||'<p style="color:#ccc;font-size:0.7rem;">目標なし</p>'}</div>`;
             }).join('');
-
-            // Ranking
-            const sorted = [...localState.users].sort((a,b) => b.total_points - a.total_points);
-            document.getElementById('ranking-list').innerHTML = sorted.map((u,i) => `<div class="ranking-item"><span>${i+1}</span><span>${u.name}</span><span style="margin-left:auto;">${u.total_points}pt</span></div>`).join('');
-
-            // Tables
-            const renderRows = (tasks) => tasks.map(t => `<tr><td style="text-align:left; font-weight:900;">${t.name}<div style="font-size:0.7rem; color:var(--accent-blue);">+${t.points}pt</div></td>${USERS.map(u => {
-                const isChecked = doneToday.some(d => d.user_id === u.id && d.task_id === t.id);
-                return `<td><div class="cell-check ${isChecked?'checked':''}" onclick="handleToggle('${u.id}','${t.id}','${t.name}',${t.points},this)"></div></td>`;
-            }).join('')}</tr>`).join('');
-            document.getElementById('daily-body').innerHTML = renderRows(DAILY_TASKS);
-            document.getElementById('regular-body').innerHTML = renderRows(REGULAR_TASKS);
         };
 
-        window.handleToggle = async (uId, tId, name, pts, el) => {
-            el.classList.add('loading');
-            await dbClient.toggle(uId, tId, name, pts, activeDate);
-            await render();
+        window.claimReward = async (uId, rId, pts, rName) => {
+            if(!confirm(`${rName} をゲットしたね！おめでとう！\n${pts}ポイントを使っていいかな？`)) return;
+            const user = localState.users.find(u => u.id === uId);
+            if(user) {
+                user.total_points -= pts;
+                if(isDB()) {
+                    await supabaseClient.from('family_users').update({ total_points: user.total_points }).eq('id', uId);
+                    await supabaseClient.from('family_rewards').delete().eq('id', rId);
+                }
+                localState.rewards = localState.rewards.filter(r => String(r.id) !== String(rId));
+                saveLocal(); render();
+                alert(`${rName}をゲット！ポイントを${pts}つかいました。`);
+            }
+        };
+
+        window.toggleUI = (uId, tId, name, pts) => {
+            const dStr = activeDate.toLocaleDateString();
+            const idx = localState.tasks_done.findIndex(t => t.user_id === uId && t.task_id === tId && new Date(t.created_at).toLocaleDateString() === dStr);
+            const user = localState.users.find(u => u.id === uId);
+            if(idx > -1) { localState.tasks_done.splice(idx,1); if(user) user.total_points -= pts; }
+            else { localState.tasks_done.push({ user_id: uId, task_id: tId, task_name: name, points: pts, created_at: activeDate.toISOString() }); if(user) user.total_points += pts; }
+            saveLocal(); render();
+        };
+
+        window.renderRewardList = () => {
+            const uId = document.getElementById('reward-user-select').value;
+            const myR = localState.rewards.filter(r => r.user_id === uId);
+            document.getElementById('reward-list').innerHTML = myR.map(r => `
+                <div style="display:flex; justify-content:space-between; align-items:center; padding:10px; border-bottom:1px solid #eee;">
+                    <span>${r.name} (${r.points}pt)</span><button onclick="deleteR('${r.id}')" style="border:none; background:none; color:var(--accent-pink); font-weight:900; cursor:pointer;">削除</button>
+                </div>`).join('') || '<p style="text-align:center; padding:20px; color:#ccc;">なし</p>';
         };
 
         window.deleteR = async (id) => {
-            if (isDB()) await supabaseClient.from('family_rewards').delete().eq('id', id);
+            if(isDB()) await supabaseClient.from('family_rewards').delete().eq('id', id);
             localState.rewards = localState.rewards.filter(r => String(r.id) !== String(id));
-            dbClient.saveLocal(); renderRewardList(); await render();
+            saveLocal(); renderRewardList(); render();
         };
 
         const setupEvents = () => {
             document.getElementById('prev-day').onclick = () => { activeDate.setDate(activeDate.getDate()-1); render(); };
             document.getElementById('next-day').onclick = () => { activeDate.setDate(activeDate.getDate()+1); render(); };
             document.getElementById('today-btn').onclick = () => { activeDate = new Date(); render(); };
-            document.getElementById('btn-save').onclick = async () => {
-                const doneToday = await dbClient.fetchTasksForDate(activeDate);
-                const comments = USERS.map(u => {
-                    const pts = doneToday.filter(d => d.user_id === u.id).reduce((s,c)=>s+c.points,0);
-                    if (pts === 0) return null;
-                    return `<div class="report-card"><strong>👤 ${u.name} (+${pts}pt)</strong><p style="margin-top:10px; font-size:0.9rem;">${AI_PHRASES[Math.floor(Math.random()*AI_PHRASES.length)]}</p></div>`;
-                }).filter(x=>x).join('') || '<p>今日はまだチェックがありません</p>';
-                document.getElementById('report-container').innerHTML = comments;
-                document.getElementById('report-modal').style.display = 'flex';
-            };
-            document.getElementById('manage-rewards-btn').onclick = () => { renderRewardList(); document.getElementById('reward-modal').style.display = 'flex'; };
-            document.getElementById('view-history-btn').onclick = async () => {
-                let history = localState.tasks_done;
-                if (isDB()) { const {data} = await supabaseClient.from('task_history').select('*').order('created_at',{ascending:false}).limit(50); if(data) history=data; }
-                document.getElementById('history-list').innerHTML = history.slice(0,50).map(h => `<div style="padding:10px; border-bottom:1px solid #eee;"><strong>${h.task_name}</strong> by ${h.user_id} <small>${new Date(h.created_at).toLocaleDateString()}</small></div>`).join('') || '<p>記録なし</p>';
-                document.getElementById('history-modal').style.display = 'flex';
-            };
+            document.getElementById('manage-rewards-btn').onclick = () => { document.getElementById('reward-modal').style.display='flex'; renderRewardList(); };
+            document.getElementById('reward-user-select').onchange = renderRewardList;
             document.getElementById('add-reward-btn').onclick = async () => {
                 const uId = document.getElementById('reward-user-select').value;
                 const n = document.getElementById('reward-name-input').value;
                 const p = parseInt(document.getElementById('reward-points-input').value);
-                if (n && p) {
-                    if (isDB()) await supabaseClient.from('family_rewards').insert([{ user_id: uId, name: n, points: p }]);
-                    localState.rewards.push({ id:Date.now(), user_id:uId, name:n, points:p });
-                    dbClient.saveLocal(); renderRewardList(); await render();
+                if(n && p){
+                    const entry = { id: Date.now(), user_id: uId, name: n, points: p };
+                    if(isDB()) await supabaseClient.from('family_rewards').insert([entry]);
+                    localState.rewards.push(entry);
+                    document.getElementById('reward-name-input').value=''; document.getElementById('reward-points-input').value='';
+                    saveLocal(); renderRewardList(); render();
                 }
             };
-        };
-
-        const renderRewardList = () => {
-            const uId = document.getElementById('reward-user-select').value;
-            const rHtml = localState.rewards.filter(r => (r.user_id === uId || r.userId === uId)).map(r => `<div style="display:flex; justify-content:space-between; padding:8px; border-bottom:1px solid #eee;"><span>${r.name} (${r.points}pt)</span><button onclick="window.deleteR('${r.id}')" style="border:none; background:none; color:var(--accent-blue); cursor:pointer;">削除</button></div>`).join('');
-            document.getElementById('reward-list').innerHTML = rHtml || '<p>なし</p>';
+            document.getElementById('btn-save').onclick = async () => {
+                const btn = document.getElementById('btn-save'); btn.classList.add('loading'); btn.textContent="保存中...";
+                if(isDB()) {
+                    const ds = new Date(activeDate); ds.setHours(0,0,0,0); const de = new Date(activeDate); de.setHours(23,59,59,999);
+                    const {data:dbTasks} = await supabaseClient.from('task_history').select('*').gte('created_at', ds.toISOString()).lte('created_at', de.toISOString());
+                    const localDay = localState.tasks_done.filter(t => new Date(t.created_at).toLocaleDateString() === activeDate.toLocaleDateString());
+                    for(const dt of dbTasks||[]) if(!localDay.find(l => l.user_id==dt.user_id && l.task_id==dt.task_id)) await supabaseClient.from('task_history').delete().eq('id', dt.id);
+                    for(const lt of localDay) if(!(dbTasks||[]).find(dt => dt.user_id==lt.user_id && dt.task_id==lt.task_id)) { const {id,...rest} = lt; await supabaseClient.from('task_history').insert([rest]); }
+                    for(const u of localState.users) await supabaseClient.from('family_users').update({ total_points: u.total_points }).eq('id', u.id);
+                }
+                btn.classList.remove('loading'); btn.textContent="決定！レポートを見る";
+                const dStr = activeDate.toLocaleDateString();
+                const doneToday = localState.tasks_done.filter(t => new Date(t.created_at).toLocaleDateString() === dStr);
+                const report = USERS.map(u => {
+                    const pts = doneToday.filter(d => d.user_id === u.id).reduce((s,c)=>s+c.points,0);
+                    if(pts === 0) return null;
+                    return `<div class="report-card"><strong>👤 ${u.name} (+${pts}pt)</strong><p style="margin-top:10px;">${AI_PHRASES[Math.floor(Math.random()*AI_PHRASES.length)]}</p></div>`;
+                }).filter(x=>x).join('') || "<p>今日の記録はありません</p>";
+                document.getElementById('report-container').innerHTML = report; document.getElementById('report-modal').style.display='flex';
+            };
+            document.getElementById('view-history-btn').onclick = () => {
+                document.getElementById('history-list').innerHTML = localState.tasks_done.slice().reverse().slice(0,50).map(h => `<div style="padding:10px; border-bottom:1px solid #eee;"><strong>${h.task_name}</strong> by ${h.user_id} <small>${new Date(h.created_at).toLocaleDateString()}</small></div>`).join('') || '<p>記録なし</p>';
+                document.getElementById('history-modal').style.display = 'flex';
+            };
+            document.querySelectorAll('.close-modal').forEach(b => b.onclick = () => b.closest('.modal').style.display = 'none');
         };
 
         window.closeModal = (id) => document.getElementById(id).style.display = 'none';
 
         (async () => {
-            dbClient.loadLocal();
+            loadLocal();
             const sel = document.getElementById('reward-user-select');
             USERS.forEach(u => sel.add(new Option(u.name, u.id)));
-            setupEvents();
+            render();
             await dbClient.fetchAll();
-            await render();
+            render();
+            setupEvents();
         })();
     </script>
 </body>
