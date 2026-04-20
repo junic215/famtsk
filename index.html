@@ -89,7 +89,6 @@
             cursor: pointer; width: 32px; height: 32px; border-radius: 10px;
             border: 3px solid #EEE; background: #F8F8F8;
             display: inline-flex; align-items: center; justify-content: center;
-            transition: all 0.2s;
         }
         .cell-check.checked { background: var(--accent-green); border-color: var(--accent-green); transform: scale(1.15); }
         .cell-check.checked::after { content: '✨'; font-size: 16px; }
@@ -114,11 +113,10 @@
         .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.3); backdrop-filter: blur(5px); z-index: 1000; align-items: center; justify-content: center; }
         .modal-content { background: white; padding: 20px 40px 40px; border-radius: 35px; border: 5px solid #FFEDD5; width: 90%; max-width: 600px; position: relative; max-height: 85vh; display: flex; flex-direction: column; }
         .modal-scroll { overflow-y: auto; flex: 1; padding: 10px 5px; }
-        .close-modal { position: absolute; top: 20px; right: 20px; cursor: pointer; font-size: 1.5rem; font-weight: bold; }
+        .close-modal { position: absolute; top: 10px; right: 20px; cursor: pointer; font-size: 2rem; font-weight: bold; }
 
         .report-card { background: #FDF9F5; border-radius: 20px; padding: 20px; margin-bottom: 15px; border-left: 6px solid var(--accent-pink); }
         .report-user { font-weight: 900; color: var(--accent-pink); margin-bottom: 8px; display: flex; justify-content: space-between; }
-        .report-comment { font-size: 0.9rem; line-height: 1.6; color: var(--text-primary); }
     </style>
 </head>
 <body>
@@ -129,29 +127,23 @@
                 <div class="nav-section">
                     <p class="nav-label">ホーム</p>
                     <a href="#" class="nav-item active">🏠 家族のみんな</a>
-                    <a href="#" id="view-history-btn" class="nav-item">🕰️ これまでの履歴</a>
+                    <a href="#" id="view-history-btn" class="nav-item">🕰️ 履歴（これまでの分）</a>
                 </div>
-                <div class="nav-section">
-                    <p class="nav-label">ランキング</p>
-                    <div id="ranking-list"></div>
-                </div>
+                <div class="nav-section"><p class="nav-label">ランキング</p><div id="ranking-list"></div></div>
             </nav>
-            <div class="sidebar-footer">
-                <button id="manage-rewards-btn" class="btn-ghost">🎨 ご褒美の設定</button>
-            </div>
+            <div class="sidebar-footer"><button id="manage-rewards-btn" class="btn-ghost">🎨 ご褒美の設定</button></div>
         </aside>
 
         <main class="main-content">
             <header class="content-header">
                 <div class="date-navigator">
-                    <button class="date-btn" id="prev-day">＜ 前の日</button>
+                    <button class="date-btn" id="prev-day">＜ 昨日</button>
                     <div class="current-date-display" id="date-display">読込中...</div>
                     <button class="date-btn" id="today-btn">今日</button>
-                    <button class="date-btn" id="next-day">次の日 ＞</button>
+                    <button class="date-btn" id="next-day">明日 ＞</button>
                 </div>
                 <button id="btn-save" class="btn-primary">決定！レポートを見る</button>
             </header>
-
             <div class="dashboard-grid">
                 <section class="goals-row" id="goals-container"></section>
                 <div class="matrix-card">
@@ -171,45 +163,37 @@
             </div>
         </main>
 
-        <div id="report-modal" class="modal"><div class="modal-content"><span class="close-modal">&times;</span><h3>🤖 AIレポート</h3><div id="report-container" class="modal-scroll"></div><button class="btn-primary" style="margin-top:20px;" onclick="closeModal('report-modal')">OK！</button></div></div>
-        <div id="history-modal" class="modal"><div class="modal-content"><span class="close-modal">&times;</span><h3>🕰️ 履歴</h3><div class="modal-scroll" id="history-list"></div></div></div>
-        <div id="reward-modal" class="modal"><div class="modal-content"><span class="close-modal">&times;</span><h3>目標設定</h3><select id="reward-user-select" style="width:100%; padding:10px; border-radius:10px; margin-top:15px;"></select><div class="modal-scroll" id="reward-list"></div><hr style="margin:20px 0; border:1px dashed #eee;"><h4>追加</h4><div style="display:flex; flex-direction:column; gap:10px; margin-top:10px;"><input type="text" id="reward-name-input" placeholder="名前" style="padding:10px; border-radius:10px; border:2px solid #eee;"><input type="number" id="reward-points-input" placeholder="ポイント" style="padding:10px; border-radius:10px; border:2px solid #eee;"><button id="add-reward-btn" class="btn-primary">追加</button></div></div></div>
+        <div id="report-modal" class="modal"><div class="modal-content"><span class="close-modal" onclick="closeModal('report-modal')">&times;</span><h3 style="margin: 10px 0;">🤖 AIレポート</h3><div id="report-container" class="modal-scroll"></div><button class="btn-primary" style="margin-top:20px;" onclick="closeModal('report-modal')">OK！</button></div></div>
+        <div id="history-modal" class="modal"><div class="modal-content"><span class="close-modal" onclick="closeModal('history-modal')">&times;</span><h3>🕰️ 履歴</h3><div class="modal-scroll" id="history-list"></div></div></div>
+        <div id="reward-modal" class="modal"><div class="modal-content"><span class="close-modal" onclick="closeModal('reward-modal')">&times;</span><h3>目標設定</h3><select id="reward-user-select" style="width:100%; padding:10px; border-radius:10px; margin-top:15px;"></select><div class="modal-scroll" id="reward-list"></div><hr style="margin:20px 0; border:1px dashed #eee;"><h4>追加</h4><div style="display:flex; flex-direction:column; gap:10px; margin-top:10px;"><input type="text" id="reward-name-input" placeholder="名前" style="padding:10px; border-radius:10px; border:2px solid #eee;"><input type="number" id="reward-points-input" placeholder="ポイント" style="padding:10px; border-radius:10px; border:2px solid #eee;"><button id="add-reward-btn" class="btn-primary">追加</button></div></div></div>
     </div>
 
     <script>
+        // --- 設定 ---
         const SUPABASE_URL = 'https://klrmecsympcysbyublqw.supabase.co';
-        const SUPABASE_ANON_KEY = 'YOUR_ANON_KEY';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtscm1lY3N5bXBjeXNieXVibHF3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY2NjI4NDYsImV4cCI6MjA5MjIzODg0Nn0.FSOy4e1aSl8IOFG8pWNbXlmEn8ZlZRa2YQiYC4ptpAo';
         let supabaseClient = null;
         try { if (SUPABASE_URL.includes('supabase.co')) supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY); } catch(e){}
 
         const USERS = [{id:'mama',name:'ママ'},{id:'papa',name:'パパ'},{id:'ken',name:'けんちゃん'},{id:'tsuki',name:'つきちゃん'}];
         const DAILY_TASKS = [{id:'d1',name:'掃除機',points:2},{id:'d2',name:'おもちゃ片付け',points:5},{id:'d3',name:'ゴミ出し',points:2},{id:'d4',name:'花の水やり',points:4},{id:'d5',name:'宿題',points:6},{id:'d6',name:'ピアノ練習',points:7},{id:'d7',name:'お風呂掃除',points:2},{id:'d8',name:'食器片付け',points:3},{id:'d9',name:'洗濯物たたみ',points:3},{id:'d10',name:'歯磨き',points:4}];
         const REGULAR_TASKS = [{id:'r1',name:'トイレ掃除',points:4},{id:'r2',name:'花の肥料やり',points:2},{id:'r3',name:'お風呂のカビ取り',points:6},{id:'r4',name:'冷蔵庫整理',points:4},{id:'r5',name:'布団干し',points:4},{id:'r6',name:'コンロ掃除',points:4},{id:'r7',name:'玄関掃除',points:4},{id:'r8',name:'草むしり',points:8},{id:'r9',name:'ケルヒャー',points:10},{id:'r10',name:'窓拭き',points:6}];
+        const AI_PHRASES = ["さすがですね！", "素晴らしい活躍です！", "天才かもしれません...", "家族の誇りです！", "輝いていますね！", "完璧な仕事ぶりです。", "努力は裏切りませんね。", "テキパキこなす姿に感動しました。"];
 
         let activeDate = new Date();
-        let localState = { users:[], rewards:[], tasks_done:[] };
+        let localState = { users: USERS.map(u=>({...u, total_points:0})), rewards: [], tasks_done: [] };
         
-        // データの初期化（壊れていても直す）
-        const loadLocalState = () => {
-            const raw = localStorage.getItem('famtsk_vfinal');
-            let data = raw ? JSON.parse(raw) : {};
-            localState.users = Array.isArray(data.users) && data.users.length ? data.users : USERS.map(u => ({...u, total_points:0}));
-            localState.rewards = Array.isArray(data.rewards) ? data.rewards : [];
-            localState.tasks_done = Array.isArray(data.tasks_done) ? data.tasks_done : [];
-        };
-        const saveLocalState = () => localStorage.setItem('famtsk_vfinal', JSON.stringify(localState));
-
-        const isDB = () => supabaseClient !== null && !SUPABASE_URL.includes('YOUR_PROJECT_URL') && !SUPABASE_ANON_KEY.includes('YOUR_ANON_KEY');
+        const isDB = () => supabaseClient !== null && SUPABASE_ANON_KEY && !SUPABASE_ANON_KEY.includes('YOUR_ANON_KEY');
 
         const dbClient = {
             async fetchAll() {
-                if (!isDB()) return;
+                if (!isDB()) { this.loadLocal(); return; }
                 try {
                     const { data:u } = await supabaseClient.from('family_users').select('*');
                     const { data:r } = await supabaseClient.from('family_rewards').select('*');
-                    if (u) localState.users = u;
-                    if (r) localState.rewards = r;
-                } catch(e){}
+                    if (u) { localState.users = u; }
+                    if (r) { localState.rewards = r; }
+                } catch(e){ this.loadLocal(); }
             },
             async fetchTasksForDate(date) {
                 const ds = new Date(date); ds.setHours(0,0,0,0);
@@ -226,35 +210,38 @@
             async toggle(uId, tId, tName, pts, date) {
                 const todayTasks = await this.fetchTasksForDate(date);
                 const existing = todayTasks.find(d => d.user_id === uId && d.task_id === tId);
+                const user = localState.users.find(u => u.id === uId);
+                
                 if (existing) {
                     if (isDB()) await supabaseClient.from('task_history').delete().eq('id', existing.id);
-                    localState.tasks_done = localState.tasks_done.filter(t => t.id != existing.id);
-                    await this.updatePts(uId, -pts);
+                    localState.tasks_done = localState.tasks_done.filter(t => String(t.id) !== String(existing.id));
+                    if (user) {
+                        user.total_points -= pts;
+                        if (isDB()) await supabaseClient.from('family_users').update({ total_points: user.total_points }).eq('id', uId);
+                    }
                 } else {
                     const newEntry = { id:Date.now(), user_id:uId, task_id:tId, task_name:tName, points:pts, created_at:new Date(date).toISOString() };
                     if (isDB()) await supabaseClient.from('task_history').insert([newEntry]);
                     localState.tasks_done.push(newEntry);
-                    await this.updatePts(uId, pts);
+                    if (user) {
+                        user.total_points += pts;
+                        if (isDB()) await supabaseClient.from('family_users').update({ total_points: user.total_points }).eq('id', uId);
+                    }
                 }
-                saveLocalState();
+                this.saveLocal();
             },
-            async updatePts(uId, diff) {
-                const user = localState.users.find(u => u.id === uId);
-                if (user) {
-                    user.total_points += diff;
-                    if (isDB()) await supabaseClient.from('family_users').update({ total_points: user.total_points }).eq('id', uId);
-                }
-            }
+            loadLocal() { const raw = localStorage.getItem('famtsk_sync_v1'); if (raw) { const d = JSON.parse(raw); if (d.users) localState.users = d.users; if (d.tasks_done) localState.tasks_done = d.tasks_done; if (d.rewards) localState.rewards = d.rewards; } },
+            saveLocal() { localStorage.setItem('famtsk_sync_v1', JSON.stringify(localState)); }
         };
 
         const render = async () => {
-            document.getElementById('date-display').textContent = `${activeDate.getFullYear()}年${activeDate.getMonth()+1}月${activeDate.getDate()}日`;
-            await dbClient.fetchAll();
+            const dateStr = `${activeDate.getFullYear()}年${activeDate.getMonth()+1}月${activeDate.getDate()}日`;
+            document.getElementById('date-display').textContent = dateStr;
             const doneToday = await dbClient.fetchTasksForDate(activeDate);
 
             // Goals
             document.getElementById('goals-container').innerHTML = localState.users.map(u => {
-                const myRewards = localState.rewards.filter(r => r.user_id === u.id || r.userId === u.id);
+                const myRewards = localState.rewards.filter(r => (r.user_id === u.id || r.userId === u.id));
                 const rewardsHtml = myRewards.map(r => {
                     const prog = Math.min(100, (u.total_points / r.points) * 100);
                     return `<div class="reward-item"><div style="font-size:0.8rem; font-weight:800;">🎁 ${r.name}</div><div class="progress-bar"><div class="progress-inner" style="width:${prog}%"></div></div></div>`;
@@ -267,72 +254,73 @@
             document.getElementById('ranking-list').innerHTML = sorted.map((u,i) => `<div class="ranking-item"><span>${i+1}</span><span>${u.name}</span><span style="margin-left:auto;">${u.total_points}pt</span></div>`).join('');
 
             // Tables
-            const renderRows = (tasks) => tasks.map(t => `
-                <tr><td style="text-align:left;"><div style="font-weight:900;">${t.name}</div><div style="font-size:0.7rem; color:var(--accent-blue);">+${t.points}pt</div></td>
-                ${USERS.map(u => {
-                    const isChecked = doneToday.some(d => d.user_id === u.id && d.task_id === t.id);
-                    return `<td><div class="cell-check ${isChecked?'checked':''}" data-u="${u.id}" data-t="${t.id}" data-n="${t.name}" data-p="${t.points}"></div></td>`;
-                }).join('')}</tr>`).join('');
-
+            const renderRows = (tasks) => tasks.map(t => `<tr><td style="text-align:left; font-weight:900;">${t.name}<div style="font-size:0.7rem; color:var(--accent-blue);">+${t.points}pt</div></td>${USERS.map(u => {
+                const isChecked = doneToday.some(d => d.user_id === u.id && d.task_id === t.id);
+                return `<td><div class="cell-check ${isChecked?'checked':''}" onclick="handleToggle('${u.id}','${t.id}','${t.name}',${t.points},this)"></div></td>`;
+            }).join('')}</tr>`).join('');
             document.getElementById('daily-body').innerHTML = renderRows(DAILY_TASKS);
             document.getElementById('regular-body').innerHTML = renderRows(REGULAR_TASKS);
+        };
 
-            document.querySelectorAll('.cell-check').forEach(c => {
-                c.onclick = async () => {
-                    c.classList.add('loading');
-                    await dbClient.toggle(c.dataset.u, c.dataset.t, c.dataset.n, parseInt(c.dataset.p), activeDate);
-                    await render();
-                };
-            });
+        window.handleToggle = async (uId, tId, name, pts, el) => {
+            el.classList.add('loading');
+            await dbClient.toggle(uId, tId, name, pts, activeDate);
+            await render();
+        };
+
+        window.deleteR = async (id) => {
+            if (isDB()) await supabaseClient.from('family_rewards').delete().eq('id', id);
+            localState.rewards = localState.rewards.filter(r => String(r.id) !== String(id));
+            dbClient.saveLocal(); renderRewardList(); await render();
         };
 
         const setupEvents = () => {
             document.getElementById('prev-day').onclick = () => { activeDate.setDate(activeDate.getDate()-1); render(); };
             document.getElementById('next-day').onclick = () => { activeDate.setDate(activeDate.getDate()+1); render(); };
             document.getElementById('today-btn').onclick = () => { activeDate = new Date(); render(); };
-            document.querySelector('.close-modal').onclick = () => closeModal('report-modal');
-            document.querySelectorAll('.close-modal').forEach(b => b.onclick = () => b.closest('.modal').style.display = 'none');
-            
             document.getElementById('btn-save').onclick = async () => {
                 const doneToday = await dbClient.fetchTasksForDate(activeDate);
                 const comments = USERS.map(u => {
                     const pts = doneToday.filter(d => d.user_id === u.id).reduce((s,c)=>s+c.points,0);
                     if (pts === 0) return null;
-                    return `<div class="report-card"><strong>👤 ${u.name} (+${pts}pt)</strong><p class="report-comment">${AI_WORDS.praise[Math.floor(Math.random()*10)]} ${AI_WORDS.action[Math.floor(Math.random()*8)]}</p></div>`;
-                }).filter(x=>x).join('') || '<p>今日の記録はありません</p>';
+                    return `<div class="report-card"><strong>👤 ${u.name} (+${pts}pt)</strong><p style="margin-top:10px; font-size:0.9rem;">${AI_PHRASES[Math.floor(Math.random()*AI_PHRASES.length)]}</p></div>`;
+                }).filter(x=>x).join('') || '<p>今日はまだチェックがありません</p>';
                 document.getElementById('report-container').innerHTML = comments;
                 document.getElementById('report-modal').style.display = 'flex';
             };
-
             document.getElementById('manage-rewards-btn').onclick = () => { renderRewardList(); document.getElementById('reward-modal').style.display = 'flex'; };
             document.getElementById('view-history-btn').onclick = async () => {
                 let history = localState.tasks_done;
                 if (isDB()) { const {data} = await supabaseClient.from('task_history').select('*').order('created_at',{ascending:false}).limit(50); if(data) history=data; }
-                document.getElementById('history-list').innerHTML = history.slice(0,50).map(h => `<div style="padding:10px; border-bottom:1px solid #eee;"><strong>${h.task_name}</strong> by ${h.user_id} <small>${new Date(h.created_at).toLocaleDateString()}</small></div>`).join('') || '<p>なし</p>';
+                document.getElementById('history-list').innerHTML = history.slice(0,50).map(h => `<div style="padding:10px; border-bottom:1px solid #eee;"><strong>${h.task_name}</strong> by ${h.user_id} <small>${new Date(h.created_at).toLocaleDateString()}</small></div>`).join('') || '<p>記録なし</p>';
                 document.getElementById('history-modal').style.display = 'flex';
+            };
+            document.getElementById('add-reward-btn').onclick = async () => {
+                const uId = document.getElementById('reward-user-select').value;
+                const n = document.getElementById('reward-name-input').value;
+                const p = parseInt(document.getElementById('reward-points-input').value);
+                if (n && p) {
+                    if (isDB()) await supabaseClient.from('family_rewards').insert([{ user_id: uId, name: n, points: p }]);
+                    localState.rewards.push({ id:Date.now(), user_id:uId, name:n, points:p });
+                    dbClient.saveLocal(); renderRewardList(); await render();
+                }
             };
         };
 
         const renderRewardList = () => {
             const uId = document.getElementById('reward-user-select').value;
-            const rHtml = localState.rewards.filter(r => (r.user_id === uId || r.userId === uId)).map(r => `<div style="display:flex; justify-content:space-between; padding:5px;"><span>${r.name}</span><button onclick="window.deleteR('${r.id}')">削除</button></div>`).join('');
+            const rHtml = localState.rewards.filter(r => (r.user_id === uId || r.userId === uId)).map(r => `<div style="display:flex; justify-content:space-between; padding:8px; border-bottom:1px solid #eee;"><span>${r.name} (${r.points}pt)</span><button onclick="window.deleteR('${r.id}')" style="border:none; background:none; color:var(--accent-blue); cursor:pointer;">削除</button></div>`).join('');
             document.getElementById('reward-list').innerHTML = rHtml || '<p>なし</p>';
-        };
-
-        window.deleteR = async (id) => {
-            if (isDB()) await supabaseClient.from('family_rewards').delete().eq('id', id);
-            localState.rewards = localState.rewards.filter(r => String(r.id) !== String(id));
-            saveLocalState(); renderRewardList(); render();
         };
 
         window.closeModal = (id) => document.getElementById(id).style.display = 'none';
 
-        // 起動
         (async () => {
-            loadLocalState();
+            dbClient.loadLocal();
             const sel = document.getElementById('reward-user-select');
             USERS.forEach(u => sel.add(new Option(u.name, u.id)));
             setupEvents();
+            await dbClient.fetchAll();
             await render();
         })();
     </script>
